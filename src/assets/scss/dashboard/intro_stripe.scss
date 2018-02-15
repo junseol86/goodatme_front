@@ -1,0 +1,49 @@
+#intro-stripe {
+  position: relative;
+  margin-top: 80px;
+  height: 210px;
+  &.red {
+    background-color: tomato;
+  }
+  & > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 210px;
+    &#shape-pattern {
+      opacity: 0.25;
+      background-size: 148px 180px;
+      &.diamond {
+        background-image: url("../../assets/img/shape_pattern_diamond.png");
+      }
+      &.spade {
+        background-image: url("../../assets/img/shape_pattern_spade.png");
+      }
+      &.circle {
+        background-image: url("../../assets/img/shape_pattern_circle.png");
+      }
+      &.clover {
+        background-image: url("../../assets/img/shape_pattern_clover.png");
+      }
+      &.square {
+        background-image: url("../../assets/img/shape_pattern_square.png");
+      }
+      &.heart {
+        background-image: url("../../assets/img/shape_pattern_heart.png");
+      }
+      &.triangle {
+        background-image: url("../../assets/img/shape_pattern_triangle.png");
+      }
+      &.random {
+        background-image: url("../../assets/img/shape_pattern_random.png");
+      }
+    }
+    &.message {
+      padding-top: 48px;
+      text-align: center;
+      font-size: 2.5em;
+      line-height: 1.5em;
+      color: white;
+    }
+  }
+}

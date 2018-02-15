@@ -1,0 +1,13 @@
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+/* 일반 버튼류 */
+.trHv {
+  cursor: pointer;
+}
+.trHv:hover {
+  opacity: 0.5;
+}
