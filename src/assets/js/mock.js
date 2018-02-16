@@ -48,7 +48,7 @@
   ]
   this.posting_6 = [
     {
-      idx: '0',
+      idx: '1',
       shape: 'spade',
       color: '',
       title: '',
@@ -56,7 +56,7 @@
       subCtgr: ''
     },
     {
-      idx: '1',
+      idx: '3',
       shape: 'clover',
       color: '',
       title: '',
@@ -64,7 +64,7 @@
       subCtgr: ''
     },
     {
-      idx: '2',
+      idx: '4',
       shape: 'triangle',
       color: '',
       title: '',
@@ -72,7 +72,7 @@
       subCtgr: ''
     },
     {
-      idx: '3',
+      idx: '7',
       shape: 'heart',
       color: '',
       title: '',
@@ -80,7 +80,7 @@
       subCtgr: ''
     },
     {
-      idx: '4',
+      idx: '8',
       shape: 'square',
       color: '',
       title: '',
@@ -88,7 +88,7 @@
       subCtgr: ''
     },
     {
-      idx: '5',
+      idx: '13',
       shape: 'diamond',
       color: '',
       title: '',

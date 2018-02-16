@@ -92,6 +92,9 @@
             </tr>
           </table>
           <div class="canvas" :style="{height: postings.canvasHeight}">
+            <div v-for="(posting, idx) in postings[category].list"
+            :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx)">
+            </div>
           </div>
         </div>
 
@@ -105,7 +108,7 @@ export default {
   name: 'Dashboard',
   data () {
     return {
-      categories: ['eat', 'pay', 'work'],
+      categories: ['eat', 'play', 'work'],
       layout: {
         windowWidth: '',
         centeredWidth: '',
@@ -130,10 +133,18 @@ export default {
         }
       },
       postings: {
-        eatList: [],
-        playList: [],
-        workList: [],
-        canvasHeight: ''
+        eat: {
+          order: [],
+          list: []
+        },
+        play: {
+          order: [],
+          list: []
+        },
+        work: {
+          order: [],
+          list: []
+        }
       }
     }
   },
@@ -142,20 +153,51 @@ export default {
       let util = require('../../assets/js/util.js')
       return util[which](args)
     },
+    centerWCanvasH () {
+      let centerW = Math.max(Math.min(window.innerWidth - 50, 1600), 1080)
+      return [centerW, centerW / 2]
+    },
     setSizes () {
       let winW = window.innerWidth
-      let cntrW = Math.max(Math.min(winW - 50, 1600), 1080)
+      let cntrW = this.centerWCanvasH()[0]
       this.layout.windowWidth = winW + 'px'
       this.layout.centeredWidth = cntrW + 'px'
       this.layout.topSlideH = cntrW * 0.4 + 'px'
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
       this.content.calendar.fontSize = cntrW / 920 + 'em'
       this.content.calendar.subtitleHeight = cntrW * 0.1 + 'px'
-      this.postings.canvasHeight = cntrW / 2 + 'px'
+      this.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
+    },
+    placePosting (ctgr, idx) {
+      let style = {
+        width: 0,
+        height: 0,
+        top: 0,
+        left: 0
+      }
+      let cntrW = this.centerWCanvasH()[0]
+      let padding = 20
+      let width = (cntrW - (2 * padding)) / 3
+      let canvasH = this.centerWCanvasH()[1]
+      let doubleH = (canvasH - padding) / 2
+      let tripleH = (canvasH - (2 * padding)) / 3
+      let tops = [0, 0, doubleH + padding, 0, tripleH + padding, (tripleH + padding) * 2]
+      let heights = [canvasH, doubleH, doubleH, tripleH, tripleH, tripleH]
+      let hPos = [0, 1, 1, 2, 2, 2]
+      style.left = this.postings[ctgr].order[hPos[idx]] * (width + padding) + 'px'
+      style.top = tops[idx] + 'px'
+      style.width = width + 'px'
+      style.height = heights[idx] + 'px'
+      return style
     },
     setMock () {
       let mock = require('../../assets/js/mock.js')
       this.content.calendar.list = mock.calendar_5
+
+      let _this = this
+      this.categories.forEach(function (ctgr) {
+        _this.postings[ctgr].list = mock.posting_6
+      })
     }
   },
   computed: {
@@ -172,9 +214,14 @@ export default {
     window.addEventListener('resize', function () {
       setSizes()
     })
+    this.setMock()
   },
   created () {
-    this.setMock()
+    let _this = this
+    // 카테고리마다의 리스트에서 타일 크기마다의 열 배열 순서를 처음에 무작위 순서로
+    this.categories.forEach(function (ctgr) {
+      _this.postings[ctgr].order = window._.shuffle([0, 1, 2])
+    })
   }
 }
 </script>

@@ -1,6 +1,7 @@
 .postings {
   padding-top: 40px;
   table {
+    width: 100%;
     td {
       &.underline {
         border-bottom: 1px solid #888;
@@ -19,6 +20,9 @@
     position: relative;
     margin-top: 24px;
     width: 100%;
-    background-color: yellowgreen;
+    > div {
+      position: absolute;
+      background-color: #f5f5f5;
+    }
   }
 }
