@@ -6,11 +6,17 @@
         <div class="centered" :style="{width: layout.centeredWidth}">
           <div id="topbar-left">
             <img class="trHv" src="../../assets/img/topbar_menu.png">
-              {{username}}
+              지오오디_에이티.엠이
           </div>
           <div id="topbar-right">
-            <span class="trHv" id="login-btn">
-              Login
+            <span v-if="!state.loggedIn">
+              <span class="trHv" id="login-btn">
+                Login
+              </span>
+              |
+              <span class="trHv" id="login-btn">
+                Register
+              </span>
             </span>
             <img class="trHv" src="../../assets/img/topbar_search.png">
           </div>
@@ -23,6 +29,7 @@
         <div id="top-slide" class="centered" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
         </div>
 
+        <!-- 나의 라이프스타일 띠 -->
         <div id="intro-stripe" :class="'red'">
           <div id="shape-pattern" :class="shapePattern" :style="{width: layout.windowWidth}">
           </div>
@@ -32,16 +39,59 @@
           </div>
         </div>
 
+        <!-- 달력 -->
         <div id="calendar">
           <div class="centered" :style="{width: layout.centeredWidth}">
             <div class="year">
               Jan 2018
             </div>
             <div class="more">
-              <span class="trHv">전체보기</span>
+              <span class="gray-btn trHv">전체보기</span>
             </div>
             <div class="list">
+              <div v-for="posting in content.calendar.list" :key="posting.idx">
+                <div>
+                  <div class="img" :style="{height: content.calendar.imgHeight}"></div>
+                  <div class="category">
+                    <span class="ctgr">_{{posting.ctgr}}</span>
+                    <span class="subCtgr">{{posting.subCtgr}}</span>
+                  </div>
+                  <div class="title myeongjo" :style="{fontSize: content.calendar.fontSize}">
+                    {{util('strLimit', [posting.title, 12])}}
+                  </div>
+                  <div class="subtitle" :style="{height: content.calendar.subtitleHeight}">
+                    {{util('strLimit', [posting.subtitle, 60])}}
+                  </div>
+                  <div class="date">{{posting.date}}</div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <!-- 나의 라이프스타일은 -->
+        <div id="my-lifestyle">
+          <div class="stripe">
+            <div class="pattern" :style="{width: layout.windowWidth}">
+            </div>
+            <div class="message" :style="{width: layout.windowWidth}">
+              {{myLifestyleMessage}}
+            </div>
+          </div>
+        </div>
+
+        <!-- 포스팅들 -->
+        <div v-for="category in categories" :key="category" class="postings centered" :style="{width: layout.centeredWidth}">
+          <table>
+            <tr>
+              <td width="100">_{{category}}</td>
+              <td class="underline"></td>
+              <td width="88">
+                <span class="gray-btn trHv">전체보기</span>
+              </td>
+            </tr>
+          </table>
+          <div class="canvas" :style="{height: postings.canvasHeight}">
           </div>
         </div>
 
@@ -55,6 +105,7 @@ export default {
   name: 'Dashboard',
   data () {
     return {
+      categories: ['eat', 'pay', 'work'],
       layout: {
         windowWidth: '',
         centeredWidth: '',
@@ -72,18 +123,35 @@ export default {
       content: {
         calendar: {
           page: 0,
-          list: []
+          list: [],
+          imgHeight: '',
+          fontSize: '',
+          subtitleHeight: ''
         }
+      },
+      postings: {
+        eatList: [],
+        playList: [],
+        workList: [],
+        canvasHeight: ''
       }
     }
   },
   methods: {
+    util (which, args) {
+      let util = require('../../assets/js/util.js')
+      return util[which](args)
+    },
     setSizes () {
       let winW = window.innerWidth
-      let cntrW = Math.max(Math.min(winW - 50, 1600), 960)
+      let cntrW = Math.max(Math.min(winW - 50, 1600), 1080)
       this.layout.windowWidth = winW + 'px'
       this.layout.centeredWidth = cntrW + 'px'
       this.layout.topSlideH = cntrW * 0.4 + 'px'
+      this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
+      this.content.calendar.fontSize = cntrW / 920 + 'em'
+      this.content.calendar.subtitleHeight = cntrW * 0.1 + 'px'
+      this.postings.canvasHeight = cntrW / 2 + 'px'
     },
     setMock () {
       let mock = require('../../assets/js/mock.js')
@@ -91,13 +159,11 @@ export default {
     }
   },
   computed: {
-    username: function () {
-      // 로그인 되었다면 사용자 이름으로, 안 되었다면 설정된 인삿말 중 랜덤
-      let consts = require('../../assets/js/consts.js')
-      return this.state.loggedIn ? this.state.account.username : window._.sample(consts.usernameGreetings)
-    },
     shapePattern: function () {
       return this.state.loggedIn ? this.state.account.shape : 'random'
+    },
+    myLifestyleMessage: function () {
+      return this.state.loggedIn ? `${this.state.account.username}님께서 구독중이신 라이프스타일` : '당신의 라이프스타일을 선택하세요.'
     }
   },
   mounted () {
@@ -114,9 +180,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '../../assets/scss/common/topbar.scss';
   @import '../../assets/scss/dashboard/dashboard.scss';
   @import '../../assets/scss/dashboard/top_slide.scss';
   @import '../../assets/scss/dashboard/intro_stripe.scss';
   @import '../../assets/scss/dashboard/calendar.scss';
-  @import '../../assets/scss/common/topbar.scss';
+  @import '../../assets/scss/dashboard/my_lifestyle.scss';
+  @import '../../assets/scss/dashboard/postings.scss';
 </style>

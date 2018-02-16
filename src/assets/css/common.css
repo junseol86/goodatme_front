@@ -1,7 +1,13 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
+
 * {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+}
+
+.myeongjo {
+  font-family: 'Nanum Myeongjo'
 }
 
 /* 일반 버튼류 */

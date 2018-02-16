@@ -1,0 +1,17 @@
+#my-lifestyle {
+  margin: 100px 0 120px;
+  .stripe {
+    position: relative;
+    height: 150px;
+    background-color: black;
+    & > div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 150px;
+      line-height: 150px;
+      color: white;
+      font-size: 3em;
+    }
+  }
+}
