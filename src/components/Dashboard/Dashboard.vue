@@ -2,7 +2,7 @@
   <div class="dashboard">
     <div id="dashboard_wrapper">
       <!-- 상단바 -->
-      <div id="topbar" :style="topbar.layout">
+      <div id="topbar" :style="{width: layout.windowWidth}">
         <div class="centered" :style="{width: layout.centeredWidth}">
           <div id="topbar-left">
             <img class="trHv" src="../../assets/img/topbar_menu.png">
@@ -32,6 +32,19 @@
           </div>
         </div>
 
+        <div id="calendar">
+          <div class="centered" :style="{width: layout.centeredWidth}">
+            <div class="year">
+              Jan 2018
+            </div>
+            <div class="more">
+              <span class="trHv">전체보기</span>
+            </div>
+            <div class="list">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -56,9 +69,10 @@ export default {
           color: ''
         }
       },
-      topbar: {
-        layout: {
-          width: ''
+      content: {
+        calendar: {
+          page: 0,
+          list: []
         }
       }
     }
@@ -70,7 +84,10 @@ export default {
       this.layout.windowWidth = winW + 'px'
       this.layout.centeredWidth = cntrW + 'px'
       this.layout.topSlideH = cntrW * 0.4 + 'px'
-      this.topbar.layout.width = winW + 'px'
+    },
+    setMock () {
+      let mock = require('../../assets/js/mock.js')
+      this.content.calendar.list = mock.calendar_5
     }
   },
   computed: {
@@ -89,6 +106,9 @@ export default {
     window.addEventListener('resize', function () {
       setSizes()
     })
+  },
+  created () {
+    this.setMock()
   }
 }
 </script>
@@ -97,5 +117,6 @@ export default {
   @import '../../assets/scss/dashboard/dashboard.scss';
   @import '../../assets/scss/dashboard/top_slide.scss';
   @import '../../assets/scss/dashboard/intro_stripe.scss';
+  @import '../../assets/scss/dashboard/calendar.scss';
   @import '../../assets/scss/common/topbar.scss';
 </style>
