@@ -1,16 +1,16 @@
 #dashboard_wrapper {
   position: relative;
+  overflow-x: hidden;
   .centered {
     margin: 0 auto;
   }
   #contents {
-    margin-top: 120px;
+    margin-top: 100px;
   }
   .gray-btn {
     display: inline-block;
     padding: 8px 10px;
     border-radius: 20px;
-    font-size: 1.1em;
     background-color: #ddd;
   }
 }

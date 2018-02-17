@@ -3,32 +3,31 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 100px;
-  padding-top: 34px;
+  height: 64px;
+  padding-top: 16px;
   background-color: rgba(255, 255, 255, 0.9);
   .centered {
-    height: 66px;
+    height: 52px;
     &::after {
       clear: both;
     }
     & > div {
-      height: 66px;
-      line-height: 66px;
+      height: 48px;
+      line-height: 48px;
       &#topbar-left {
         float: left;
-        font-size: 1.6em;
+        font-size: 1.2em;
       }
       &#topbar-right {
         float: right;
         span {
-          font-size: 1.2em;
           margin: 0 8px;
         }
       }
       img {
         vertical-align: middle;
-        width: 66px;
-        height: 66px;
+        width: 48px;
+        height: 48px;
       }
     }
   }

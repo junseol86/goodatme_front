@@ -1,7 +1,7 @@
 #intro-stripe {
   position: relative;
   margin-top: 80px;
-  height: 210px;
+  height: 180px;
   &.red {
     background-color: tomato;
   }
@@ -9,7 +9,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 210px;
+    height: 180px;
     &#shape-pattern {
       opacity: 0.2;
       background-size: 148px 180px;
@@ -45,10 +45,10 @@
       }
     }
     &.message {
-      padding-top: 48px;
+      padding-top: 40px;
       text-align: center;
-      font-size: 2.5em;
-      line-height: 1.5em;
+      font-size: 2.4em;
+      line-height: 1.4em;
       color: white;
       span {
         font-size: 0.8em;

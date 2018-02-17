@@ -100,7 +100,7 @@
         <div v-for="category in categories" :key="category" class="postings centered" :style="{width: layout.centeredWidth}">
           <table>
             <tr>
-              <td width="100">_{{category}}</td>
+              <td width="80">_{{category}}</td>
               <td class="underline"></td>
               <td width="88">
                 <span class="gray-btn trHv">전체보기</span>
@@ -130,6 +130,11 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- 샵 -->
+        <div id="shop" class="centered" :style="{width: layout.centeredWidth}">
+          <span class="label">_shop</span>
         </div>
 
       </div>
@@ -202,7 +207,7 @@ export default {
       this.layout.topSlideH = cntrW * 0.4 + 'px'
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
       this.content.calendar.fontSize = cntrW / 920 + 'em'
-      this.content.calendar.subtitleHeight = cntrW * 0.1 + 'px'
+      this.content.calendar.subtitleHeight = cntrW * 0.08 + 'px'
       this.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
     },
     codeToColor (code) {
@@ -243,9 +248,9 @@ export default {
       switch (which) {
         case 'title': {
           style.left = cntrW / 50 + 'px'
-          style.bottom = cntrW / 21 + 'px'
+          style.bottom = cntrW / 20 + 'px'
           style.width = cntrW / 4 + 'px'
-          style.fontSize = cntrW / 500 + 'em'
+          style.fontSize = cntrW / 680 + 'em'
           break
         }
         case 'date': {
@@ -255,7 +260,7 @@ export default {
         }
         case 'subCtgr': {
           style.left = cntrW / 50 + 112 + 'px'
-          style.bottom = cntrW / 40 - 2 + 'px'
+          style.bottom = cntrW / 40 - 4 + 'px'
           break
         }
         case 'symbol': {
@@ -312,4 +317,5 @@ export default {
   @import '../../assets/scss/dashboard/calendar.scss';
   @import '../../assets/scss/dashboard/my_lifestyle.scss';
   @import '../../assets/scss/dashboard/postings.scss';
+  @import '../../assets/scss/dashboard/shop.scss';
 </style>
