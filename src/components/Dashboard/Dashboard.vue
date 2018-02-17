@@ -78,6 +78,22 @@
               {{myLifestyleMessage}}
             </div>
           </div>
+          <div class="edit centered" :style="{width: layout.centeredWidth}">
+            <span class="gray-btn trHv">편집하기</span>
+          </div>
+          <div class="subscribings centered" :style="{width: layout.centeredWidth}">
+            <div v-for="(subs, idx) in lifestyle.subscribings" :key="idx" class="trHv" :style="codeToColor(subs.color)">
+              <img v-if="subs.shape == 'diamond'" src="../../assets/img/subsc_diamond.png">
+              <img v-if="subs.shape == 'circle'" src="../../assets/img/subsc_circle.png">
+              <img v-if="subs.shape == 'clover'" src="../../assets/img/subsc_clover.png">
+              <img v-if="subs.shape == 'heart'" src="../../assets/img/subsc_heart.png">
+              <img v-if="subs.shape == 'infinity'" src="../../assets/img/subsc_infinity.png">
+              <img v-if="subs.shape == 'spade'" src="../../assets/img/subsc_spade.png">
+              <img v-if="subs.shape == 'square'" src="../../assets/img/subsc_square.png">
+              <img v-if="subs.shape == 'star'" src="../../assets/img/subsc_star.png">
+              <img v-if="subs.shape == 'triangle'" src="../../assets/img/subsc_triangle.png">
+            </div>
+          </div>
         </div>
 
         <!-- 포스팅들 -->
@@ -94,6 +110,24 @@
           <div class="canvas" :style="{height: postings.canvasHeight}">
             <div v-for="(posting, idx) in postings[category].list"
             :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx)">
+              <div class="black-cover">
+              </div>
+              <span class="abs title" :style="placeInsidePosting('title')">{{posting.title}}</span>
+              <span class="abs subCtgr" :style="placeInsidePosting('subCtgr')">{{posting.subCtgr}}</span>
+              <span class="abs date" :style="placeInsidePosting('date')">{{posting.date}}</span>
+              <div class="abs symbol" :style="placeInsidePosting('symbol')">
+                <div :style="codeToColor(posting.color)">
+                  <img v-if="posting.shape == 'diamond'" src="../../assets/img/subsc_diamond.png">
+                  <img v-if="posting.shape == 'circle'" src="../../assets/img/subsc_circle.png">
+                  <img v-if="posting.shape == 'clover'" src="../../assets/img/subsc_clover.png">
+                  <img v-if="posting.shape == 'heart'" src="../../assets/img/subsc_heart.png">
+                  <img v-if="posting.shape == 'infinity'" src="../../assets/img/subsc_infinity.png">
+                  <img v-if="posting.shape == 'spade'" src="../../assets/img/subsc_spade.png">
+                  <img v-if="posting.shape == 'square'" src="../../assets/img/subsc_square.png">
+                  <img v-if="posting.shape == 'star'" src="../../assets/img/subsc_star.png">
+                  <img v-if="posting.shape == 'triangle'" src="../../assets/img/subsc_triangle.png">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -132,6 +166,9 @@ export default {
           subtitleHeight: ''
         }
       },
+      lifestyle: {
+        subscribings: []
+      },
       postings: {
         eat: {
           order: [],
@@ -168,6 +205,16 @@ export default {
       this.content.calendar.subtitleHeight = cntrW * 0.1 + 'px'
       this.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
     },
+    codeToColor (code) {
+      let offset = 60
+      let r = parseInt(code.split('-')[0]) * 85 + offset
+      let g = parseInt(code.split('-')[1]) * 85 + offset
+      let b = parseInt(code.split('-')[2]) * 85 + offset
+      let result = {
+        backgroundColor: `rgb(${r}, ${g}, ${b})`
+      }
+      return result
+    },
     placePosting (ctgr, idx) {
       let style = {
         width: 0,
@@ -190,13 +237,44 @@ export default {
       style.height = heights[idx] + 'px'
       return style
     },
+    placeInsidePosting (which) {
+      let cntrW = this.centerWCanvasH()[0]
+      var style = {}
+      switch (which) {
+        case 'title': {
+          style.left = cntrW / 50 + 'px'
+          style.bottom = cntrW / 21 + 'px'
+          style.width = cntrW / 4 + 'px'
+          style.fontSize = cntrW / 500 + 'em'
+          break
+        }
+        case 'date': {
+          style.left = cntrW / 50 + 'px'
+          style.bottom = cntrW / 40 + 'px'
+          break
+        }
+        case 'subCtgr': {
+          style.left = cntrW / 50 + 112 + 'px'
+          style.bottom = cntrW / 40 - 2 + 'px'
+          break
+        }
+        case 'symbol': {
+          style.top = cntrW / 52 + 'px'
+          style.right = cntrW / 52 + 'px'
+          break
+        }
+      }
+      return style
+    },
     setMock () {
       let mock = require('../../assets/js/mock.js')
       this.content.calendar.list = mock.calendar_5
 
+      this.lifestyle.subscribings = mock.subscribings
+
       let _this = this
       this.categories.forEach(function (ctgr) {
-        _this.postings[ctgr].list = mock.posting_6
+        _this.postings[ctgr].list = window._.shuffle(mock.posting_6)
       })
     }
   },
@@ -205,7 +283,7 @@ export default {
       return this.state.loggedIn ? this.state.account.shape : 'random'
     },
     myLifestyleMessage: function () {
-      return this.state.loggedIn ? `${this.state.account.username}님께서 구독중이신 라이프스타일` : '당신의 라이프스타일을 선택하세요.'
+      return this.state.loggedIn ? `${this.state.account.username}님께서 구독중이신 라이프스타일` : '구독할 라이프스타일을 선택하세요.'
     }
   },
   mounted () {
