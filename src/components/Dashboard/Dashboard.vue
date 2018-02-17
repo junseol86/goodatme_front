@@ -30,7 +30,7 @@
         </div>
 
         <!-- 나의 라이프스타일 띠 -->
-        <div id="intro-stripe" :class="'red'">
+        <div id="intro-stripe" :class="'red'" :style="{width: layout.windowWidth}">
           <div id="shape-pattern" :class="shapePattern" :style="{width: layout.windowWidth}">
           </div>
           <div class="message" v-if="!state.loggedIn" :style="{width: layout.windowWidth}">
@@ -71,7 +71,7 @@
 
         <!-- 나의 라이프스타일은 -->
         <div id="my-lifestyle">
-          <div class="stripe">
+          <div class="stripe" :style="{width: layout.windowWidth}">
             <div class="pattern" :style="{width: layout.windowWidth}">
             </div>
             <div class="message" :style="{width: layout.windowWidth}">
