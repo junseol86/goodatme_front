@@ -1,4 +1,46 @@
 (function () {
+  this.topSlides = [
+    {
+      idx: 0,
+      title: '혼자 걷는 길, 외롭지 않게',
+      ctgr: 'eat',
+      subCtgr: '야식',
+      shape: 'spade',
+      date: '2018.02.20',
+      editor: '박현주',
+      img: ''
+    },
+    {
+      idx: 0,
+      title: '조용한 코워킹 스페이스',
+      ctgr: 'work',
+      subCtgr: '카페',
+      shape: 'diamond',
+      date: '2018.02.20',
+      editor: '박현주',
+      img: ''
+    },
+    {
+      idx: 0,
+      title: '혼자 걷는 길, 외롭지 않게',
+      ctgr: 'eat',
+      subCtgr: '야식',
+      shape: 'spade',
+      date: '2018.02.20',
+      editor: '박현주',
+      img: ''
+    },
+    {
+      idx: 0,
+      title: '조용한 코워킹 스페이스',
+      ctgr: 'work',
+      subCtgr: '카페',
+      shape: 'diamond',
+      date: '2018.02.20',
+      editor: '박현주',
+      img: ''
+    }
+  ]
   this.subscribings = [
     { shape: 'diamond', color: '0-0-0' },
     { shape: 'circle', color: '0-0-1' },

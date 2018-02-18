@@ -27,6 +27,40 @@
       <div id="contents">
         <!-- 최상단 슬라이드 -->
         <div id="top-slide" class="centered" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
+          <div v-if="content.topSlide.list.length> 0" class="black-bg-text" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
+            <div class="abs ctgr" :style="placeInsideTopSlide('ctgr')">
+              _{{content.topSlide.list[content.topSlide.selectedIdx].ctgr}}
+            </div>
+            <div class="abs title" :style="placeInsideTopSlide('title')">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'diamond'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_diamond.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'circle'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_circle.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'clover'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_clover.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'heart'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_heart.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'infinity'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_infinity.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'spade'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_spade.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'square'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_square.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'star'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_star.png">
+              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'triangle'"
+              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_triangle.png">
+              <br>{{content.topSlide.list[content.topSlide.selectedIdx].title}}
+            </div>
+            <div class="abs subCtgr" :style="placeInsideTopSlide('subCtgr')">
+              {{content.topSlide.list[content.topSlide.selectedIdx].subCtgr}}
+            </div>
+            <div class="abs date-editor" :style="placeInsideTopSlide('date-editor')">
+              {{content.topSlide.list[content.topSlide.selectedIdx].date}}<br>
+              <span>by</span>
+              {{content.topSlide.list[content.topSlide.selectedIdx].editor}} 에디터
+            </div>
+          </div>
         </div>
 
         <!-- 나의 라이프스타일 띠 -->
@@ -82,7 +116,7 @@
             <span class="gray-btn trHv">편집하기</span>
           </div>
           <div class="subscribings centered" :style="{width: layout.centeredWidth}">
-            <div v-for="(subs, idx) in lifestyle.subscribings" :key="idx" class="trHv" :style="codeToColor(subs.color)">
+            <div v-for="(subs, idx) in content.lifestyle.subscribings" :key="idx" class="trHv" :style="codeToColor(subs.color)">
               <img v-if="subs.shape == 'diamond'" src="../../assets/img/subsc_diamond.png">
               <img v-if="subs.shape == 'circle'" src="../../assets/img/subsc_circle.png">
               <img v-if="subs.shape == 'clover'" src="../../assets/img/subsc_clover.png">
@@ -107,8 +141,8 @@
               </td>
             </tr>
           </table>
-          <div class="canvas" :style="{height: postings.canvasHeight}">
-            <div v-for="(posting, idx) in postings[category].list"
+          <div class="canvas" :style="{height: content.postings.canvasHeight}">
+            <div v-for="(posting, idx) in content.postings[category].list"
             :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx)">
               <div class="black-cover">
               </div>
@@ -163,29 +197,33 @@ export default {
         }
       },
       content: {
+        topSlide: {
+          selectedIdx: 0,
+          list: []
+        },
         calendar: {
           page: 0,
           list: [],
           imgHeight: '',
           fontSize: '',
           subtitleHeight: ''
-        }
-      },
-      lifestyle: {
-        subscribings: []
-      },
-      postings: {
-        eat: {
-          order: [],
-          list: []
         },
-        play: {
-          order: [],
-          list: []
+        lifestyle: {
+          subscribings: []
         },
-        work: {
-          order: [],
-          list: []
+        postings: {
+          eat: {
+            order: [],
+            list: []
+          },
+          play: {
+            order: [],
+            list: []
+          },
+          work: {
+            order: [],
+            list: []
+          }
         }
       }
     }
@@ -208,7 +246,7 @@ export default {
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
       this.content.calendar.fontSize = cntrW / 920 + 'em'
       this.content.calendar.subtitleHeight = cntrW * 0.08 + 'px'
-      this.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
+      this.content.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
     },
     codeToColor (code) {
       let offset = 60
@@ -219,6 +257,41 @@ export default {
         backgroundColor: `rgb(${r}, ${g}, ${b})`
       }
       return result
+    },
+    placeInsideTopSlide (which) {
+      let cntrW = this.centerWCanvasH()[0]
+      var style = {}
+      switch (which) {
+        case 'title': {
+          style.left = cntrW / 5 + 'px'
+          style.bottom = cntrW / 11 + 'px'
+          style.width = cntrW * 0.25 + 'px'
+          style.fontSize = cntrW / 500 + 'em'
+          break
+        }
+        case 'img': {
+          style.width = cntrW / 15 + 'px'
+          style.hight = cntrW / 15 + 'px'
+          break
+        }
+        case 'ctgr': {
+          style.left = cntrW / 5 + 'px'
+          style.top = cntrW / 24 + 'px'
+          style.fontSize = cntrW / 300 + 'em'
+          break
+        }
+        case 'subCtgr': {
+          style.left = cntrW / 5 + 'px'
+          style.bottom = cntrW / 16 + 'px'
+          break
+        }
+        case 'date-editor': {
+          style.right = cntrW * 0.58 + 'px'
+          style.bottom = cntrW / 16 - 16 + 'px'
+          break
+        }
+      }
+      return style
     },
     placePosting (ctgr, idx) {
       let style = {
@@ -236,7 +309,7 @@ export default {
       let tops = [0, 0, doubleH + padding, 0, tripleH + padding, (tripleH + padding) * 2]
       let heights = [canvasH, doubleH, doubleH, tripleH, tripleH, tripleH]
       let hPos = [0, 1, 1, 2, 2, 2]
-      style.left = this.postings[ctgr].order[hPos[idx]] * (width + padding) + 'px'
+      style.left = this.content.postings[ctgr].order[hPos[idx]] * (width + padding) + 'px'
       style.top = tops[idx] + 'px'
       style.width = width + 'px'
       style.height = heights[idx] + 'px'
@@ -273,13 +346,14 @@ export default {
     },
     setMock () {
       let mock = require('../../assets/js/mock.js')
+      this.content.topSlide.list = mock.topSlides
       this.content.calendar.list = mock.calendar_5
 
-      this.lifestyle.subscribings = mock.subscribings
+      this.content.lifestyle.subscribings = mock.subscribings
 
       let _this = this
       this.categories.forEach(function (ctgr) {
-        _this.postings[ctgr].list = window._.shuffle(mock.posting_6)
+        _this.content.postings[ctgr].list = window._.shuffle(mock.posting_6)
       })
     }
   },
@@ -303,7 +377,7 @@ export default {
     let _this = this
     // 카테고리마다의 리스트에서 타일 크기마다의 열 배열 순서를 처음에 무작위 순서로
     this.categories.forEach(function (ctgr) {
-      _this.postings[ctgr].order = window._.shuffle([0, 1, 2])
+      _this.content.postings[ctgr].order = window._.shuffle([0, 1, 2])
     })
   }
 }

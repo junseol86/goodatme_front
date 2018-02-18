@@ -1,3 +1,35 @@
 #top-slide {
   background-color: #f5f5f5;
+  position: relative;
+  .black-bg-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.67);
+    color: white;
+    .abs {
+      position: absolute;
+      &.ctgr {
+        font-weight: bold;
+      }
+      &.title {
+        text-align: left;
+        img {
+          margin-left: -16px;
+        }
+      }
+      &.subCtgr {
+        padding: 5px 7px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+      }
+      &.date-editor {
+        text-align: right;
+        line-height: 1.3em;
+        span {
+          margin-right: 32px;
+        }
+      }
+    }
+  }
 }
