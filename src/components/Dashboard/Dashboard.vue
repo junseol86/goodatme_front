@@ -10,7 +10,7 @@
           </div>
           <div id="topbar-right">
             <span v-if="!state.loggedIn">
-              <span class="trHv" id="login-btn">
+              <span class="trHv" id="login-btn" @click="setPopup('login')">
                 Login
               </span>
               |
@@ -69,7 +69,7 @@
           </div>
           <div class="message" v-if="!state.loggedIn" :style="{width: layout.windowWidth}">
             나를 위한 공간을 찾아보세요.<br>
-            <span class="trHv">회원가입</span> | <span class="trHv">로그인</span>
+            <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('login')">로그인</span>
           </div>
         </div>
 
@@ -172,18 +172,25 @@
         </div>
 
       </div>
+      <div class="popup">
+        <dashboard-popup v-if="popup != ''" :layout="layout" :state="state" :popup="popup"></dashboard-popup>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import {bus} from '../../main.js'
+import DashboardPopup from './DashboardPopup'
 export default {
+  components: {DashboardPopup},
   name: 'Dashboard',
   data () {
     return {
       categories: ['eat', 'play', 'work'],
       layout: {
         windowWidth: '',
+        windowHeight: '',
         centeredWidth: '',
         topSlideH: ''
       },
@@ -196,6 +203,7 @@ export default {
           color: ''
         }
       },
+      popup: '',
       content: {
         topSlide: {
           selectedIdx: 0,
@@ -237,16 +245,22 @@ export default {
       let centerW = Math.max(Math.min(window.innerWidth - 50, 1600), 1080)
       return [centerW, centerW / 2]
     },
+    // 화면 요소들 사이즈
     setSizes () {
       let winW = window.innerWidth
       let cntrW = this.centerWCanvasH()[0]
       this.layout.windowWidth = winW + 'px'
+      this.layout.windowHeight = window.innerHeight + 'px'
       this.layout.centeredWidth = cntrW + 'px'
       this.layout.topSlideH = cntrW * 0.4 + 'px'
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
       this.content.calendar.fontSize = cntrW / 920 + 'em'
       this.content.calendar.subtitleHeight = cntrW * 0.08 + 'px'
       this.content.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
+    },
+    setPopup (which) {
+      console.log(which)
+      this.popup = which
     },
     codeToColor (code) {
       let offset = 60
@@ -372,6 +386,10 @@ export default {
       setSizes()
     })
     this.setMock()
+
+    bus.$on('setPopup', which => {
+      this.popup = which
+    })
   },
   created () {
     let _this = this

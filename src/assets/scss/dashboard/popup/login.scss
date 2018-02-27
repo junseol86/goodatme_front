@@ -1,0 +1,31 @@
+#login {
+  width: 360px;
+  padding: 40px;
+  border-radius: 24px;
+  .title {
+    font-size: 1.5em;
+    margin-bottom: 24px;
+  }
+  input {
+    width: 100%;
+    height: 36px;
+    font-size: 1em;
+    margin-bottom: 8px;
+    border: 0;
+    outline: 0;
+    border-bottom: 1px solid #ddd;
+  }
+  .buttons {
+    margin-top: 16px;
+    font-size: 1.1em;
+    &::after {
+      clear: both;
+    }
+    .register {
+      float: left;
+    }
+    .ok {
+      float: right;
+    }
+  }
+}

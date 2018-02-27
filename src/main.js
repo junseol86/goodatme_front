@@ -7,6 +7,8 @@ import router from './router'
 import lodash from 'lodash'
 import VueLodash from 'vue-lodash'
 
+export const bus = new Vue()
+
 Vue.config.productionTip = false
 Vue.use(VueLodash, lodash)
 
