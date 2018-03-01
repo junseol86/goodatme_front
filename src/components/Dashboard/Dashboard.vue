@@ -182,6 +182,7 @@
 <script>
 import {bus} from '../../main.js'
 import DashboardPopup from './DashboardPopup'
+const apiUrl = 'http://13.125.24.19:8002/'
 export default {
   components: {DashboardPopup},
   name: 'Dashboard',
@@ -259,7 +260,6 @@ export default {
       this.content.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
     },
     setPopup (which) {
-      console.log(which)
       this.popup = which
     },
     codeToColor (code) {
@@ -358,6 +358,16 @@ export default {
       }
       return style
     },
+    login (email, password) {
+      this.$axios.get(apiUrl + 'account/login', {
+        headers: {
+          'email': email,
+          'password': password
+        }
+      }).then((result) => {
+        console.log(result.data)
+      })
+    },
     setMock () {
       let mock = require('../../assets/js/mock.js')
       this.content.topSlide.list = mock.topSlides
@@ -389,6 +399,9 @@ export default {
 
     bus.$on('setPopup', which => {
       this.popup = which
+    })
+    bus.$on('login', emPw => {
+      this.login(emPw[0], emPw[1])
     })
   },
   created () {
