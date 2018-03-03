@@ -18,6 +18,15 @@
                 Register
               </span>
             </span>
+            <span v-else>
+              <span class="trHv" id="mypage-btn">
+                마이페이지
+              </span>
+              |
+              <span class="trHv" id="logout-btn" @click="logout(true)">
+                로그아웃
+              </span>
+            </span>
             <img class="trHv" src="../../assets/img/topbar_search.png">
           </div>
         </div>
@@ -173,7 +182,7 @@
 
       </div>
       <div class="popup">
-        <dashboard-popup v-if="popup != ''" :layout="layout" :state="state" :popup="popup"></dashboard-popup>
+        <login-popup v-if="popup == 'login'" :layout="layout" :state="state" :popup="popup"></login-popup>
       </div>
     </div>
   </div>
@@ -181,10 +190,10 @@
 
 <script>
 import {bus} from '../../main.js'
-import DashboardPopup from './DashboardPopup'
+import LoginPopup from '../Popup/LoginPopup'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {DashboardPopup},
+  components: {LoginPopup},
   name: 'Dashboard',
   data () {
     return {
@@ -198,10 +207,14 @@ export default {
       state: {
         loggedIn: false,
         account: {
-          id: '',
-          username: '',
+          email: '',
+          nickname: '',
           shape: '',
-          color: ''
+          color_r: '',
+          color_g: '',
+          color_b: '',
+          color_str: '',
+          type: ''
         }
       },
       popup: '',
@@ -364,8 +377,39 @@ export default {
           'email': email,
           'password': password
         }
-      }).then((result) => {
-        console.log(result.data)
+      }).then((response) => {
+        this.state.account = response.data.account
+        this.state.loggedIn = true
+        this.$cookie.set('token', response.data.token, 7)
+        this.popup = ''
+      }).catch((error) => {
+        alert(error.response.data)
+      })
+    },
+    access () {
+      if (this.$cookie.get('token') === undefined) {
+        this.logout(false)
+      } else {
+        this.$axios.get(apiUrl + 'account/access', {
+          headers: {
+            'token': this.$cookie.get('token')
+          }
+        }).then((response) => {
+          this.state.account = response.data.account
+          this.state.loggedIn = true
+          this.$cookie.set('token', response.data.token, 7)
+          this.popup = ''
+        }).catch((error) => {
+          alert(error.response.data)
+          this.logout(true)
+        })
+      }
+    },
+    logout (reload) {
+      this.$cookie.remove('token')
+      this.state.loggedIn = false
+      Object.keys(this.state.account).map((it) => {
+        this.state.account[it] = ''
       })
     },
     setMock () {
@@ -403,6 +447,9 @@ export default {
     bus.$on('login', emPw => {
       this.login(emPw[0], emPw[1])
     })
+
+    // 토큰 로그인 시도
+    this.access()
   },
   created () {
     let _this = this
