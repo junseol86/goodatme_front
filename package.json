@@ -16,8 +16,10 @@
   "dependencies": {
     "axios": "^0.18.0",
     "es6-promise": "^4.2.4",
+    "jquery": "^3.3.1",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.5",
+    "query-string": "^5.1.0",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
     "vue-lodash": "^1.0.4",

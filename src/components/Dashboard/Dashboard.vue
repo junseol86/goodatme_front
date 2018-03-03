@@ -22,6 +22,9 @@
               <span class="trHv" id="mypage-btn">
                 마이페이지
               </span>
+              <span v-if="state.account.type == 'ADMIN'" class="trHv" id="write-post-btn" @click="beginWrite()">
+                포스트
+              </span>
               |
               <span class="trHv" id="logout-btn" @click="logout(true)">
                 로그아웃
@@ -102,8 +105,8 @@
                   <div class="title myeongjo" :style="{fontSize: content.calendar.fontSize}">
                     {{util('strLimit', [posting.title, 12])}}
                   </div>
-                  <div class="subtitle" :style="{height: content.calendar.subtitleHeight}">
-                    {{util('strLimit', [posting.subtitle, 60])}}
+                  <div class="brief" :style="{height: content.calendar.briefHeight}">
+                    {{util('strLimit', [posting.brief, 60])}}
                   </div>
                   <div class="date">{{posting.date}}</div>
                 </div>
@@ -182,7 +185,8 @@
 
       </div>
       <div class="popup">
-        <login-popup v-if="popup == 'login'" :layout="layout" :state="state" :popup="popup"></login-popup>
+        <login-popup v-if="popup == 'login'" :layout="layout" :state="state"></login-popup>
+        <write-popup v-if="popup == 'write'" :layout="layout" :state="state"></write-popup>
       </div>
     </div>
   </div>
@@ -191,9 +195,10 @@
 <script>
 import {bus} from '../../main.js'
 import LoginPopup from '../Popup/LoginPopup'
+import WritePopup from '../Popup/WritePopup'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {LoginPopup},
+  components: {LoginPopup, WritePopup},
   name: 'Dashboard',
   data () {
     return {
@@ -228,7 +233,7 @@ export default {
           list: [],
           imgHeight: '',
           fontSize: '',
-          subtitleHeight: ''
+          briefHeight: ''
         },
         lifestyle: {
           subscribings: []
@@ -269,7 +274,7 @@ export default {
       this.layout.topSlideH = cntrW * 0.4 + 'px'
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
       this.content.calendar.fontSize = cntrW / 920 + 'em'
-      this.content.calendar.subtitleHeight = cntrW * 0.08 + 'px'
+      this.content.calendar.briefHeight = cntrW * 0.08 + 'px'
       this.content.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
     },
     setPopup (which) {
@@ -411,6 +416,10 @@ export default {
       Object.keys(this.state.account).map((it) => {
         this.state.account[it] = ''
       })
+    },
+    beginWrite () {
+      this.setPopup('write')
+      bus.$emit('initEditor', false)
     },
     setMock () {
       let mock = require('../../assets/js/mock.js')

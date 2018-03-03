@@ -1,0 +1,35 @@
+#write {
+  overflow-y: scroll;
+  background-color: white;
+  font-size: 1.1em;
+  text-align: left;
+  > div {
+    padding: 40px;
+    > div {
+      margin-bottom: 12px;
+      &::after {
+        clear: both;
+      }
+      .right {
+        float: right;
+      }
+      input, select, button {
+        height: 32px;
+        line-height: 32px;
+        padding: 0 8px;
+        &.long {
+          width: 600px;
+        }
+        &[type=file] {
+          visibility: hidden;
+        }
+      }
+      input.optional {
+        border: 1px dashed #ddd;
+      }
+      textarea {
+        width: 100%;
+      }
+    }
+  }
+}

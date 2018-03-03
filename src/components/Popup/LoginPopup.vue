@@ -18,7 +18,7 @@
 <script>
 import {bus} from '../../main.js'
 export default {
-  props: ['layout', 'state', 'popup'],
+  props: ['layout', 'state'],
   name: 'LoginPopup',
   data () {
     return {
