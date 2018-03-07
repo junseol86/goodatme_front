@@ -1,6 +1,10 @@
 #dashboard_wrapper {
   position: relative;
   overflow-x: hidden;
+  overflow-y: scroll;
+  &.noScroll {
+    overflow-y: hidden;
+  }
   .centered {
     margin: 0 auto;
   }

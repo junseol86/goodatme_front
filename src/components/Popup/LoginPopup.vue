@@ -1,15 +1,17 @@
 <template>
   <div class="login-popup">
     <div class="popup_wrapper" :style="{width: layout.windowWidth, height: layout.windowHeight}">
-      <div id="login">
-        <div class="title">로그인</div>
-        <input type="text" placeholder="이메일" v-model="email"/><br>
-        <input type="password" placeholder="비밀번호" v-model="password" @keyup="loginEnter"/>
-        <div class="buttons">
-          <span class="trHv register">회원가입</span>
-          <span class="trHv ok" @click="login()">확인</span>
+      <div :style="{width: layout.windowWidth}">
+        <div id="login">
+          <div class="title">로그인</div>
+          <input type="text" placeholder="이메일" v-model="email"/><br>
+          <input type="password" placeholder="비밀번호" v-model="password" @keyup="loginEnter"/>
+          <div class="buttons">
+            <span class="trHv register">회원가입</span>
+            <span class="trHv ok" @click="login()">확인</span>
+          </div>
+          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('')"/>
         </div>
-        <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('')"/>
       </div>
     </div>
   </div>

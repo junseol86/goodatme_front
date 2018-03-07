@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard">
-    <div id="dashboard_wrapper">
+    <div id="dashboard_wrapper" :class="popup === '' ? '' : 'noScroll'"
+    :style="{width: layout.windowWidth, height: layout.windowHeight}">
       <!-- 상단바 -->
       <div id="topbar" :style="{width: layout.windowWidth}">
         <div class="centered" :style="{width: layout.centeredWidth}">
@@ -19,15 +20,15 @@
               </span>
             </span>
             <span v-else>
-              <span class="trHv" id="mypage-btn">
-                마이페이지
+              <span class="trHv" id="mypage-btn" @click="setPopup('mypage')">
+                Mypage
               </span>
               <span v-if="state.account.type == 'ADMIN'" class="trHv" id="write-post-btn" @click="beginWrite()">
-                포스트
+                Post
               </span>
               |
               <span class="trHv" id="logout-btn" @click="logout(true)">
-                로그아웃
+                Logout
               </span>
             </span>
             <img class="trHv" src="../../assets/img/topbar_search.png">
@@ -39,29 +40,17 @@
       <div id="contents">
         <!-- 최상단 슬라이드 -->
         <div id="top-slide" class="centered" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
-          <div v-if="content.topSlide.list.length> 0" class="black-bg-text" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
+          <div v-if="content.topSlide.list.length> 0" class="black-bg-text"
+            :style="{width: layout.centeredWidth, height: layout.topSlideH}">
+            <image-bg :width="layout.centeredWidth" :height="layout.topSlideH"
+            :url="'2018-2-4_2-43-52-6907.jpg'"></image-bg>
+            <div class="abs darkBg" :style="{width: layout.centeredWidth, height: layout.topSlideH}"></div>
             <div class="abs ctgr" :style="placeInsideTopSlide('ctgr')">
               _{{content.topSlide.list[content.topSlide.selectedIdx].ctgr}}
             </div>
             <div class="abs title" :style="placeInsideTopSlide('title')">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'diamond'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_diamond.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'circle'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_circle.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'clover'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_clover.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'heart'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_heart.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'infinity'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_infinity.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'spade'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_spade.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'square'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_square.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'star'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_star.png">
-              <img v-if="content.topSlide.list[content.topSlide.selectedIdx].shape == 'triangle'"
-              :style="placeInsideTopSlide('img')" src="../../assets/img/outline_triangle.png">
+              <img :style="placeInsideTopSlide('img')"
+              :src="'http://13.125.24.19:8001/interface/outline_' + content.topSlide.list[content.topSlide.selectedIdx].shape + '.png'">
               <br>{{content.topSlide.list[content.topSlide.selectedIdx].title}}
             </div>
             <div class="abs subCtgr" :style="placeInsideTopSlide('subCtgr')">
@@ -95,12 +84,17 @@
               <span class="gray-btn trHv">전체보기</span>
             </div>
             <div class="list">
-              <div v-for="posting in content.calendar.list" :key="posting.idx">
+              <div v-for="posting in content.calendar.list" :key="posting.idx" @click="openPosting(posting.idx)">
                 <div>
-                  <div class="img" :style="{height: content.calendar.imgHeight}"></div>
+                  <div class="imgBgCon">
+                    <image-bg :url="posting.image"
+                    :width="content.calendar.imgWidth" :height="content.calendar.imgHeight"></image-bg>
+                  </div>
+                  <!-- <div class="img" :style="{height: content.calendar.imgHeight}"
+                  v-bind:data-url="posting.image" @load="fillBg('hoho')"></div> -->
                   <div class="category">
-                    <span class="ctgr">_{{posting.ctgr}}</span>
-                    <span class="subCtgr">{{posting.subCtgr}}</span>
+                    <span class="ctgr">_{{posting.category}}</span>
+                    <span class="subCtgr">{{posting.sub_category}}</span>
                   </div>
                   <div class="title myeongjo" :style="{fontSize: content.calendar.fontSize}">
                     {{util('strLimit', [posting.title, 12])}}
@@ -108,7 +102,7 @@
                   <div class="brief" :style="{height: content.calendar.briefHeight}">
                     {{util('strLimit', [posting.brief, 60])}}
                   </div>
-                  <div class="date">{{posting.date}}</div>
+                  <div class="date">{{posting.createdAt.slice(5, 7)}}</div>
                 </div>
               </div>
             </div>
@@ -129,15 +123,7 @@
           </div>
           <div class="subscribings centered" :style="{width: layout.centeredWidth}">
             <div v-for="(subs, idx) in content.lifestyle.subscribings" :key="idx" class="trHv" :style="codeToColor(subs.color)">
-              <img v-if="subs.shape == 'diamond'" src="../../assets/img/subsc_diamond.png">
-              <img v-if="subs.shape == 'circle'" src="../../assets/img/subsc_circle.png">
-              <img v-if="subs.shape == 'clover'" src="../../assets/img/subsc_clover.png">
-              <img v-if="subs.shape == 'heart'" src="../../assets/img/subsc_heart.png">
-              <img v-if="subs.shape == 'infinity'" src="../../assets/img/subsc_infinity.png">
-              <img v-if="subs.shape == 'spade'" src="../../assets/img/subsc_spade.png">
-              <img v-if="subs.shape == 'square'" src="../../assets/img/subsc_square.png">
-              <img v-if="subs.shape == 'star'" src="../../assets/img/subsc_star.png">
-              <img v-if="subs.shape == 'triangle'" src="../../assets/img/subsc_triangle.png">
+              <img :src="'http://13.125.24.19:8001/interface/subsc_' + subs.shape + '.png'">
             </div>
           </div>
         </div>
@@ -155,23 +141,20 @@
           </table>
           <div class="canvas" :style="{height: content.postings.canvasHeight}">
             <div v-for="(posting, idx) in content.postings[category].list"
-            :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx)">
-              <div class="black-cover">
+            :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx, false)">
+              <image-bg
+              :width="placePosting(category, idx, true).width"
+              :height="placePosting(category, idx, true).height"
+              :url="posting.image">
+              </image-bg>
+              <div class="abs black-cover" :style="placePosting(category, idx, true)">
               </div>
               <span class="abs title" :style="placeInsidePosting('title')">{{posting.title}}</span>
               <span class="abs subCtgr" :style="placeInsidePosting('subCtgr')">{{posting.subCtgr}}</span>
               <span class="abs date" :style="placeInsidePosting('date')">{{posting.date}}</span>
               <div class="abs symbol" :style="placeInsidePosting('symbol')">
                 <div :style="codeToColor(posting.color)">
-                  <img v-if="posting.shape == 'diamond'" src="../../assets/img/subsc_diamond.png">
-                  <img v-if="posting.shape == 'circle'" src="../../assets/img/subsc_circle.png">
-                  <img v-if="posting.shape == 'clover'" src="../../assets/img/subsc_clover.png">
-                  <img v-if="posting.shape == 'heart'" src="../../assets/img/subsc_heart.png">
-                  <img v-if="posting.shape == 'infinity'" src="../../assets/img/subsc_infinity.png">
-                  <img v-if="posting.shape == 'spade'" src="../../assets/img/subsc_spade.png">
-                  <img v-if="posting.shape == 'square'" src="../../assets/img/subsc_square.png">
-                  <img v-if="posting.shape == 'star'" src="../../assets/img/subsc_star.png">
-                  <img v-if="posting.shape == 'triangle'" src="../../assets/img/subsc_triangle.png">
+                  <img :src="'http://13.125.24.19:8001/interface/subsc_' + posting.shape + '.png'">
                 </div>
               </div>
             </div>
@@ -186,7 +169,9 @@
       </div>
       <div class="popup">
         <login-popup v-if="popup == 'login'" :layout="layout" :state="state"></login-popup>
+        <mypage-popup v-if="popup == 'mypage' && state.loggedIn" :layout="layout" :state="state"></mypage-popup>
         <write-popup v-if="popup == 'write'" :layout="layout" :state="state"></write-popup>
+        <posting-popup v-if="popup == 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
       </div>
     </div>
   </div>
@@ -194,11 +179,14 @@
 
 <script>
 import {bus} from '../../main.js'
+import ImageBg from '../Common/ImageBg'
 import LoginPopup from '../Popup/LoginPopup'
+import MypagePopup from '../Popup/MypagePopup'
 import WritePopup from '../Popup/WritePopup'
+import PostingPopup from '../Popup/PostingPopup'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {LoginPopup, WritePopup},
+  components: {ImageBg, LoginPopup, MypagePopup, WritePopup, PostingPopup},
   name: 'Dashboard',
   data () {
     return {
@@ -223,6 +211,7 @@ export default {
         }
       },
       popup: '',
+      postingOn: '',
       content: {
         topSlide: {
           selectedIdx: 0,
@@ -257,8 +246,7 @@ export default {
   },
   methods: {
     util (which, args) {
-      let util = require('../../assets/js/util.js')
-      return util[which](args)
+      return this.$util[which](args)
     },
     centerWCanvasH () {
       let centerW = Math.max(Math.min(window.innerWidth - 50, 1600), 1080)
@@ -272,10 +260,16 @@ export default {
       this.layout.windowHeight = window.innerHeight + 'px'
       this.layout.centeredWidth = cntrW + 'px'
       this.layout.topSlideH = cntrW * 0.4 + 'px'
+      this.content.calendar.imgWidth = cntrW / 5 - 24 + 'px'
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'
       this.content.calendar.fontSize = cntrW / 920 + 'em'
       this.content.calendar.briefHeight = cntrW * 0.08 + 'px'
       this.content.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
+      bus.$emit('setBg')
+    },
+    fillBg (el) {
+      console.log('HH')
+      console.log(el)
     },
     setPopup (which) {
       this.popup = which
@@ -325,12 +319,12 @@ export default {
       }
       return style
     },
-    placePosting (ctgr, idx) {
+    placePosting (ctgr, idx, sizeOnly) {
       let style = {
         width: 0,
         height: 0,
-        top: 0,
-        left: 0
+        top: '',
+        left: ''
       }
       let cntrW = this.centerWCanvasH()[0]
       let padding = 20
@@ -341,8 +335,10 @@ export default {
       let tops = [0, 0, doubleH + padding, 0, tripleH + padding, (tripleH + padding) * 2]
       let heights = [canvasH, doubleH, doubleH, tripleH, tripleH, tripleH]
       let hPos = [0, 1, 1, 2, 2, 2]
-      style.left = this.content.postings[ctgr].order[hPos[idx]] * (width + padding) + 'px'
-      style.top = tops[idx] + 'px'
+      if (!sizeOnly) {
+        style.left = this.content.postings[ctgr].order[hPos[idx]] * (width + padding) + 'px'
+        style.top = tops[idx] + 'px'
+      }
       style.width = width + 'px'
       style.height = heights[idx] + 'px'
       return style
@@ -432,6 +428,20 @@ export default {
       this.categories.forEach(function (ctgr) {
         _this.content.postings[ctgr].list = window._.shuffle(mock.posting_6)
       })
+    },
+    getPostings () {
+      this.$axios.get(apiUrl + 'posting/posting')
+        .then((response) => {
+          this.content.calendar.list = response.data
+        })
+    },
+    openPosting (idx) {
+      this.postingOn = idx
+      this.setPopup('posting')
+    },
+    afterPostingUpload () {
+      this.popup = ''
+      this.getPostings()
     }
   },
   computed: {
@@ -439,7 +449,7 @@ export default {
       return this.state.loggedIn ? this.state.account.shape : 'random'
     },
     myLifestyleMessage: function () {
-      return this.state.loggedIn ? `${this.state.account.username}님께서 구독중이신 라이프스타일` : '구독할 라이프스타일을 선택하세요.'
+      return this.state.loggedIn ? `${this.state.account.nickname}님께서 구독중이신 라이프스타일` : '구독할 라이프스타일을 선택하세요.'
     }
   },
   mounted () {
@@ -456,9 +466,13 @@ export default {
     bus.$on('login', emPw => {
       this.login(emPw[0], emPw[1])
     })
+    bus.$on('afterPostingUpload', () => {
+      this.afterPostingUpload()
+    })
 
     // 토큰 로그인 시도
     this.access()
+    this.getPostings()
   },
   created () {
     let _this = this

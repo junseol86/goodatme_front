@@ -1,9 +1,11 @@
 .popup_wrapper {
-  background-color: rgba(0, 0, 0, 0.9);
-  display: table-cell;
+  background-color: rgba(0, 0, 0, 0.8);
+  // display: table-cell;
   text-align: center;
   vertical-align: middle;
-  > div {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  > div > div {
     position: relative;
     display: inline-block;
     background-color: white;

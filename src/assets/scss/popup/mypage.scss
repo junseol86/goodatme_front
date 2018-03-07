@@ -1,0 +1,25 @@
+.mypage-popup {
+  #mypage {
+    position: relative;
+    background-color: white;
+    overflow: hidden;
+    #shapeSection {
+      position: relative;
+      #shape > img {
+        width: 100%;
+        height: 100%;
+        opacity: 0.67;
+      }
+      #shapeDesc {
+        position: absolute;
+        text-align: left;
+        line-height: 1.2em;
+        span {
+          font-size: 1.3em;
+          font-weight: bold;
+          line-height: 2em;
+        }
+      }
+    }    
+  }
+}

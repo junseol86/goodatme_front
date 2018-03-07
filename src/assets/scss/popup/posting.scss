@@ -1,0 +1,34 @@
+.posting-popup {
+  #board {
+    position: relative;
+    background-color: white;
+    font-size: 1.1em;
+    overflow: hidden;
+    #close {
+      position: absolute;
+      z-index: 100;
+      top: 24px;
+      right: 24px;
+      width: 72px;
+      height: 72px;
+    }
+    #topImage {
+      position: relative;
+      .black {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: black;
+        opacity: 0.67;
+      }
+    }
+    #belowTop {
+      text-align: left;
+      padding-right: 300px;
+      #title {
+        padding: 40px;
+        font-size: 3em;
+      } 
+    }
+  }
+}

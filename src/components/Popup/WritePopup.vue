@@ -1,85 +1,87 @@
 <template>
-  <div class="login-popup">
+  <div class="write-popup">
     <div class="popup_wrapper" :style="{width: layout.windowWidth, height: layout.windowHeight}">
-      <div id="write" :style="{width: layout.centeredWidth, height: layout.windowHeight}">
-        <div>
+      <div :style="{width: layout.windowWidth}">
+        <div id="write" :style="{width: layout.centeredWidth}">
           <div>
-            <select v-model="posting.category">
-              <option value="eat">eat</option>
-              <option value="play">play</option>
-              <option value="work">work</option>
-            </select>
-            <input v-model="posting.sub_category" placeholder="부 카테고리(ex: 야식)"/>
-          </div>
-          <div>
-            <input v-model="posting.rgn_do" placeholder="도 또는 특별시"/>
-            <input v-model="posting.rgn_sgg" placeholder="시군구(ex: 포항시 북구)"/>
-            <input v-model="posting.rgn_emd" class="optional" placeholder="읍면동 (ex: 양덕동, 흥해읍)"/>
-            <input v-model="posting.rgn_ri" class="optional" placeholder="리 (ex: 남송리)"/>
-          </div>
-          <div>
-            <select v-model="posting.shape">
-              <option value="circle">동그라미</option>
-              <option value="clover">클로버</option>
-              <option value="diamond">다이아몬드</option>
-              <option value="heart">하트</option>
-              <option value="infinity">무한</option>
-              <option value="spade">스페이드</option>
-              <option value="star">별</option>
-              <option value="square">네모</option>
-              <option value="triangle">세모</option>
-            </select>
-            <select v-model="posting.color_r">
-              <option value="0">R: 낮음</option>
-              <option value="1">R: 중간</option>
-              <option value="2">R: 높음</option>
-            </select>
-            <select v-model="posting.color_g">
-              <option value="0">G: 낮음</option>
-              <option value="1">G: 중간</option>
-              <option value="2">G: 높음</option>
-            </select>
-            <select v-model="posting.color_b">
-              <option value="0">B: 낮음</option>
-              <option value="1">B: 중간</option>
-              <option value="2">B: 높음</option>
-            </select>
-          </div>
-          <div>
-            <input type="text" class="long" v-model="posting.place" placeholder="장소명 (ex: 한동카페 양덕점)"/>
-          </div>
-          <div>
-            <input type="text" class="long" v-model="posting.title" placeholder="포스팅 제목"/>
-          </div>
-          <div>
-            <textarea v-model="posting.brief" placeholder="썸네일에 간략히 표시될 3문장 이내의 텍스트"/>
-          </div>
-          <div>
-            <button @click="postingImageDialog()">
-              {{posting.image === '' ? '포스팅 이미지 업로드' : '포스팅 이미지 수정'}}
-            </button>
-            <button v-if="posting.image !== ''" @click="checkImage()">
-              이미지 확인
-            </button>
-            <span></span>
-            <input id="postingImage" name="photo" type="file" @change="uploadPostingImage()"/>
-          </div>
-          <div id="tinymce_container">
-            <textarea id="tm_write"></textarea>
-          </div>
-          <div>
-            <input v-model="posting.hashtags" type="text" class="long" placeholder="해시태그 - 쉼표로 구분 (ex: 양덕,야식,분위기)"/>
-            <input v-model="posting.importance" type="number" class="optional" placeholder="중요도(비례)"/>
-          </div>
-          <div>
-            <button @click="contentImageDialog()">본문 이미지 삽입</button>
-            <input id="contentImage" name="photo" type="file" @change="uploadContentImage()"/>
-            <button class="right" @click="upload()">
-              {{readyToUpload ? '포스팅 업로드' : '필수항목과 포스팅이미지를 작성/업로드 해주세요.'}}
+            <div>
+              <select v-model="posting.category">
+                <option value="eat">eat</option>
+                <option value="play">play</option>
+                <option value="work">work</option>
+              </select>
+              <input v-model="posting.sub_category" placeholder="부 카테고리(ex: 야식)"/>
+            </div>
+            <div>
+              <input v-model="posting.rgn_do" placeholder="도 또는 특별시"/>
+              <input v-model="posting.rgn_sgg" placeholder="시군구(ex: 포항시 북구)"/>
+              <input v-model="posting.rgn_emd" class="optional" placeholder="읍면동 (ex: 양덕동, 흥해읍)"/>
+              <input v-model="posting.rgn_ri" class="optional" placeholder="리 (ex: 남송리)"/>
+            </div>
+            <div>
+              <select v-model="posting.shape">
+                <option value="circle">동그라미</option>
+                <option value="clover">클로버</option>
+                <option value="diamond">다이아몬드</option>
+                <option value="heart">하트</option>
+                <option value="infinity">무한</option>
+                <option value="spade">스페이드</option>
+                <option value="star">별</option>
+                <option value="square">네모</option>
+                <option value="triangle">세모</option>
+              </select>
+              <select v-model="posting.color_r">
+                <option value="0">R: 낮음</option>
+                <option value="1">R: 중간</option>
+                <option value="2">R: 높음</option>
+              </select>
+              <select v-model="posting.color_g">
+                <option value="0">G: 낮음</option>
+                <option value="1">G: 중간</option>
+                <option value="2">G: 높음</option>
+              </select>
+              <select v-model="posting.color_b">
+                <option value="0">B: 낮음</option>
+                <option value="1">B: 중간</option>
+                <option value="2">B: 높음</option>
+              </select>
+            </div>
+            <div>
+              <input type="text" class="long" v-model="posting.place" placeholder="장소명 (ex: 한동카페 양덕점)"/>
+            </div>
+            <div>
+              <input type="text" class="long" v-model="posting.title" placeholder="포스팅 제목"/>
+            </div>
+            <div>
+              <textarea v-model="posting.brief" placeholder="썸네일에 간략히 표시될 3문장 이내의 텍스트"/>
+            </div>
+            <div>
+              <button @click="postingImageDialog()">
+                {{posting.image === '' ? '포스팅 이미지 업로드' : '포스팅 이미지 수정'}}
               </button>
+              <button v-if="posting.image !== ''" @click="checkImage()">
+                이미지 확인
+              </button>
+              <span></span>
+              <input id="postingImage" name="photo" type="file" @change="uploadPostingImage()"/>
+            </div>
+            <div id="tinymce_container">
+              <textarea id="tm_write"></textarea>
+            </div>
+            <div>
+              <input v-model="posting.hashtags" type="text" class="long" placeholder="해시태그 - 쉼표로 구분 (ex: 양덕,야식,분위기)"/>
+              <input v-model="posting.importance" type="number" class="optional" placeholder="중요도(비례)"/>
+            </div>
+            <div>
+              <button @click="contentImageDialog()">본문 이미지 삽입</button>
+              <input id="contentImage" name="photo" type="file" @change="uploadContentImage()"/>
+              <button class="right" @click="upload()">
+                {{readyToUpload ? '포스팅 업로드' : '필수항목과 포스팅이미지를 작성/업로드 해주세요.'}}
+                </button>
+            </div>
           </div>
+          <img class="trHv close" src="../../assets/img/popup_x.png" @click="finishWrite()"/>
         </div>
-        <img class="trHv close" src="../../assets/img/popup_x.png" @click="finishWrite()"/>
       </div>
     </div>
   </div>
@@ -133,7 +135,7 @@ export default {
         tinymce.init({
           selector: '#tm_write',
           toolbar: 'undo redo | styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify',
-          height: Number(this.layout.windowHeight.replace('px', '')) - 640 + 'px'
+          height: Number(this.layout.windowHeight.replace('px', '')) - 200 + 'px'
         })
       }
     },
@@ -189,7 +191,7 @@ export default {
         headers: {'content-type': 'multipart/form-data'}
       })
         .then((response) => {
-          var imgToInsert = `<img src="${imgUrl}${response.data.imageUrl}"/>`
+          var imgToInsert = `<img style="max-width: 100%;" src="${imgUrl}${response.data.imageUrl}"/>`
           this.insertContent(imgToInsert)
         })
     },
@@ -201,7 +203,17 @@ export default {
         this.setContent()
         this.posting.token = this.$cookie.get('token')
         var toPost = this.$qs.stringify(this.posting)
-        console.log(toPost)
+        this.$axios.post(apiUrl + 'posting/posting', toPost, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        })
+          .then((response) => {
+            this.$cookie.set('token', response.data.account.token)
+            bus.$emit('afterPostingUpload')
+          }).catch(err => {
+            console.log(err)
+          })
       } else {
         console.log(this.posting)
       }
