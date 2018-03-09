@@ -173,6 +173,9 @@
         <write-popup v-if="popup == 'write'" :layout="layout" :state="state"></write-popup>
         <posting-popup v-if="popup == 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
       </div>
+      <div class="popup2">
+        <question-popup v-if="popup2 == 'question'" :layout="layout" :state="state"></question-popup>
+      </div>
     </div>
   </div>
 </template>
@@ -181,12 +184,13 @@
 import {bus} from '../../main.js'
 import ImageBg from '../Common/ImageBg'
 import LoginPopup from '../Popup/LoginPopup'
+import QuestionPopup from '../Popup/QuestionPopup'
 import MypagePopup from '../Popup/MypagePopup'
 import WritePopup from '../Popup/WritePopup'
 import PostingPopup from '../Popup/PostingPopup'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {ImageBg, LoginPopup, MypagePopup, WritePopup, PostingPopup},
+  components: {ImageBg, LoginPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup},
   name: 'Dashboard',
   data () {
     return {
@@ -211,6 +215,7 @@ export default {
         }
       },
       popup: '',
+      popup2: '',
       postingOn: '',
       content: {
         topSlide: {
@@ -273,6 +278,9 @@ export default {
     },
     setPopup (which) {
       this.popup = which
+    },
+    setPopup2 (which) {
+      this.popup2 = which
     },
     codeToColor (code) {
       let offset = 60
@@ -461,7 +469,10 @@ export default {
     this.setMock()
 
     bus.$on('setPopup', which => {
-      this.popup = which
+      this.setPopup(which)
+    })
+    bus.$on('setPopup2', which => {
+      this.setPopup2(which)
     })
     bus.$on('login', emPw => {
       this.login(emPw[0], emPw[1])

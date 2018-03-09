@@ -4,7 +4,7 @@
       <div :style="{width: layout.windowWidth}">
         <div id="mypage" :style="{width: layout.centeredWidth}">
           <div id="shapeSection" :style="shapeSectionStyle">
-            <div id="shape" :style="shapeStyle">
+            <div id="shape" :style="shapeStyle" @click="setPopup('2', 'question')">
               <img :src="`http://13.125.24.19:8001/interface/shp_lg_strk_${shapeWB}_${state.account.shape}.png`">
             </div>
             <div id="shapeDesc" :style="shapeDescStyle">
@@ -30,6 +30,7 @@
               </div>
             </div>
           </div>
+          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('', '')"/>
         </div>
       </div>
     </div>
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-// import {bus} from '../../main.js'
+import {bus} from '../../main.js'
 export default {
   props: ['layout', 'state'],
   name: 'MypagePopup',
@@ -48,6 +49,9 @@ export default {
     }
   },
   methods: {
+    setPopup (idx, which) {
+      bus.$emit('setPopup' + idx, which)
+    },
     setAjMoving (e, onOff) {
       this.ajMoving = onOff
     },
@@ -89,7 +93,8 @@ export default {
         width: length,
         height: length,
         backgroundColor: `rgb(${this.colors[0]},${this.colors[1]},${this.colors[2]})`,
-        borderRadius: radius
+        borderRadius: radius,
+        cursor: 'pointer'
       }
     },
     shapeDescStyle () {
