@@ -54,18 +54,17 @@ export default {
     ajMove (e, idx) {
       if (!this.ajMoving) return
       var x = e.layerX - this.adjRadius.r
-      var y = this.adjRadius.r - e.layerY
+      var y = Math.max(0.1, this.adjRadius.r - e.layerY)
       var rad = Math.atan(y / -x)
       rad += rad < 0 ? Math.PI : 0
       // var deg = rad * 180 / Math.PI
-      this.$set(this.colors, idx, Math.round(rad * 256 / Math.PI))
+      this.$set(this.colors, idx, Math.round(rad * 255 / Math.PI))
     },
     adjHandleStyle (idx) {
-      var rad = this.colors[idx] * 180 / 256 * (Math.PI / 180)
+      var rad = Math.max(0, this.colors[idx] * 180 / 256 * (Math.PI / 180))
       var x = this.adjRadius.r - (this.adjRadius.adjR * Math.cos(rad))
       var y = this.adjRadius.r - (this.adjRadius.adjR * Math.sin(rad))
       var handleSize = this.cw / 1600 * 28
-      console.log(`${x} ${y}`)
       return {
         width: handleSize + 'px',
         height: handleSize + 'px',
@@ -86,11 +85,10 @@ export default {
     shapeStyle () {
       var length = this.cw * 320 / 1600 + 'px'
       var radius = this.cw * 160 / 1600 + 'px'
-      var colorStr = this.state.account.color_str.split('-')
       return {
         width: length,
         height: length,
-        backgroundColor: `rgb(${colorStr[0]},${colorStr[1]},${colorStr[2]})`,
+        backgroundColor: `rgb(${this.colors[0]},${this.colors[1]},${this.colors[2]})`,
         borderRadius: radius
       }
     },
@@ -102,8 +100,7 @@ export default {
       }
     },
     shapeWB () {
-      var colorStr = this.state.account.color_str.split('-')
-      return ((parseInt(colorStr[0])) + parseInt(colorStr[1]) + parseInt(colorStr[2])) / 3 > 128 ? 'b' : 'w'
+      return (this.colors[0] + this.colors[1] + this.colors[2]) / 3 > 128 ? 'b' : 'w'
     },
     shapeAdj () {
       return this.$consts.shapes[this.state.account.shape][2]
@@ -119,23 +116,27 @@ export default {
         marginBottom: 24 * this.cw / 1600 + 'px'
       }
     },
+    // 색상 조정판 크기
+    // 실제 조정판: 300 * 150
+    // 패딩: 28
+    // 선 두깨: 10
     colorAdjustStyle () {
       return {
         width: 400 * this.cw / 1600 + 'px',
-        height: 164 * this.cw / 1600 + 'px'
+        height: 178 * this.cw / 1600 + 'px'
       }
     },
     colorAdjustInnerStyle () {
       return {
         width: 328 * this.cw / 1600 + 'px',
-        height: 164 * this.cw / 1600 + 'px',
+        height: 178 * this.cw / 1600 + 'px',
         marginLeft: 36 * this.cw / 1600 + 'px'
       }
     },
     colorAdjustLabelStyle () {
       return {
         width: 328 * this.cw / 1600 + 'px',
-        height: 164 * this.cw / 1600 + 'px',
+        height: 178 * this.cw / 1600 + 'px',
         lineHeight: 240 * this.cw / 1600 + 'px',
         top: 0,
         fontSize: this.cw / 400 + 'em'
