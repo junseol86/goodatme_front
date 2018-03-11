@@ -39,21 +39,44 @@
 
 <script>
 import {bus} from '../../main.js'
+const apiUrl = 'http://13.125.24.19:8002/'
 export default {
   props: ['layout', 'state'],
   name: 'MypagePopup',
   data () {
     return {
       colors: [0, 0, 0],
-      ajMoving: false
+      ajMoving: false,
+      shouldUpload: false
     }
   },
   methods: {
     setPopup (idx, which) {
       bus.$emit('setPopup' + idx, which)
     },
+    // 색 조정 후 서버로 전송
     setAjMoving (e, onOff) {
       this.ajMoving = onOff
+      if (!onOff && this.shouldUpload) {
+        var toPost = this.$qs.stringify({
+          token: this.$cookie.get('token'),
+          color_str: `${this.colors[0]}-${this.colors[1]}-${this.colors[2]}`,
+          color_r: Math.floor(this.colors[0] / 85),
+          color_g: Math.floor(this.colors[1] / 85),
+          color_b: Math.floor(this.colors[2] / 85)
+        })
+        this.$axios.put(apiUrl + 'account/color', toPost, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        })
+          .then((response) => {
+            bus.$emit('updateAccount', response)
+            this.shouldUpload = false
+          }).catch(err => {
+            console.log(err)
+          })
+      }
     },
     ajMove (e, idx) {
       if (!this.ajMoving) return
@@ -63,6 +86,7 @@ export default {
       rad += rad < 0 ? Math.PI : 0
       // var deg = rad * 180 / Math.PI
       this.$set(this.colors, idx, Math.round(rad * 255 / Math.PI))
+      this.shouldUpload = true
     },
     adjHandleStyle (idx) {
       var rad = Math.max(0, this.colors[idx] * 180 / 256 * (Math.PI / 180))

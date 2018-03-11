@@ -33,6 +33,7 @@ export default {
     setPopup (idx, which) {
       bus.$emit('setPopup' + idx, which)
     },
+    // 질문들 다운로드
     getQuestions () {
       this.$axios.get(apiUrl + 'question/question').then((response) => {
         this.questions = response.data
@@ -40,6 +41,7 @@ export default {
         alert(error.response.data)
       })
     },
+    // 테스트 결과로 사용자의 모양을 결정하여 서버로 전송
     score () {
       var shapes = ['circle', 'triangle', 'square', 'star', 'infinity', 'clover', 'diamond', 'heart', 'spade']
       var score = {
@@ -68,7 +70,21 @@ export default {
           winner = shape
         }
       })
-      console.log(winner)
+      var toPost = this.$qs.stringify({
+        token: this.$cookie.get('token'),
+        shape: winner
+      })
+      this.$axios.put(apiUrl + 'account/shape', toPost, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+        .then((response) => {
+          bus.$emit('updateAccount', response)
+          this.setPopup('2', '')
+        }).catch(err => {
+          console.log(err)
+        })
     },
     makeChoice (which) {
       this.choices.push(which)

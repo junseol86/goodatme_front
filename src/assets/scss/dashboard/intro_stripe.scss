@@ -2,54 +2,21 @@
   position: relative;
   margin-top: 80px;
   height: 180px;
-  &.red {
-    background-color: tomato;
-  }
   & > div {
     position: absolute;
     top: 0;
     left: 0;
     height: 180px;
     &#shape-pattern {
-      opacity: 0.2;
+      opacity: 0.1;
       background-size: 148px 180px;
-      &.diamond {
-        background-image: url("../../assets/img/shape_pattern_diamond.png");
-      }
-      &.spade {
-        background-image: url("../../assets/img/shape_pattern_spade.png");
-      }
-      &.circle {
-        background-image: url("../../assets/img/shape_pattern_circle.png");
-      }
-      &.clover {
-        background-image: url("../../assets/img/shape_pattern_clover.png");
-      }
-      &.square {
-        background-image: url("../../assets/img/shape_pattern_square.png");
-      }
-      &.heart {
-        background-image: url("../../assets/img/shape_pattern_heart.png");
-      }
-      &.triangle {
-        background-image: url("../../assets/img/shape_pattern_triangle.png");
-      }
-      &.star {
-        background-image: url("../../assets/img/shape_pattern_star.png");
-      }
-      &.infinity {
-        background-image: url("../../assets/img/shape_pattern_infinity.png");
-      }
-      &.random {
-        background-image: url("../../assets/img/shape_pattern_random.png");
-      }
     }
     &.message {
       padding-top: 40px;
       text-align: center;
       font-size: 2.4em;
       line-height: 1.4em;
-      color: white;
+      opacity: 0.9;
       span {
         font-size: 0.8em;
       }

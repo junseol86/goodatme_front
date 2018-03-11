@@ -65,12 +65,16 @@
         </div>
 
         <!-- 나의 라이프스타일 띠 -->
-        <div id="intro-stripe" :class="'red'" :style="{width: layout.windowWidth}">
-          <div id="shape-pattern" :class="shapePattern" :style="{width: layout.windowWidth}">
+        <div id="intro-stripe" :style="introStripeStyle">
+          <div id="shape-pattern" :style="shapePatternStyle">
           </div>
           <div class="message" v-if="!state.loggedIn" :style="{width: layout.windowWidth}">
             나를 위한 공간을 찾아보세요.<br>
             <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('login')">로그인</span>
+          </div>
+          <div class="message" v-else :style="{width: layout.windowWidth}">
+            {{shapeAdj}}<br>
+            {{shapeNick}} {{state.account.nickname + '님만을 위한 공간'}}
           </div>
         </div>
 
@@ -380,6 +384,7 @@ export default {
       }
       return style
     },
+    // 이메일과 비밀번호로 로그인
     login (email, password) {
       this.$axios.get(apiUrl + 'account/login', {
         headers: {
@@ -387,14 +392,13 @@ export default {
           'password': password
         }
       }).then((response) => {
-        this.state.account = response.data.account
-        this.state.loggedIn = true
-        this.$cookie.set('token', response.data.token, 7)
+        this.updateAccount(response)
         this.popup = ''
       }).catch((error) => {
         alert(error.response.data)
       })
     },
+    // 토큰으로 로그인
     access () {
       if (this.$cookie.get('token') === undefined) {
         this.logout(false)
@@ -404,9 +408,7 @@ export default {
             'token': this.$cookie.get('token')
           }
         }).then((response) => {
-          this.state.account = response.data.account
-          this.state.loggedIn = true
-          this.$cookie.set('token', response.data.token, 7)
+          this.updateAccount(response)
           this.popup = ''
         }).catch((error) => {
           alert(error.response.data)
@@ -414,6 +416,13 @@ export default {
         })
       }
     },
+    // 로그인 등 계정을 필요로 하는 작업 후 토큰 등 계정정보 업데이트
+    updateAccount (response) {
+      this.state.account = response.data.account
+      this.state.loggedIn = true
+      this.$cookie.set('token', response.data.token, 7)
+    },
+    // 로그아웃
     logout (reload) {
       this.$cookie.remove('token')
       this.state.loggedIn = false
@@ -421,6 +430,7 @@ export default {
         this.state.account[it] = ''
       })
     },
+    // 게시물 작성 팝업을 열고 에디터 초기화
     beginWrite () {
       this.setPopup('write')
       bus.$emit('initEditor', false)
@@ -453,11 +463,42 @@ export default {
     }
   },
   computed: {
-    shapePattern: function () {
-      return this.state.loggedIn ? this.state.account.shape : 'random'
-    },
     myLifestyleMessage: function () {
       return this.state.loggedIn ? `${this.state.account.nickname}님께서 구독중이신 라이프스타일` : '구독할 라이프스타일을 선택하세요.'
+    },
+    shapeAdj () {
+      return this.$consts.shapes[this.state.account.shape][2]
+    },
+    shapeNick () {
+      return this.$consts.shapes[this.state.account.shape][1]
+    },
+    myShape: function () {
+      return this.state.loggedIn ? this.state.account.shape : 'random'
+    },
+    myColor: function () {
+      return this.state.loggedIn
+        ? `rgb(${this.state.account.color_str.split('-')[0]},
+        ${this.state.account.color_str.split('-')[1]},
+        ${this.state.account.color_str.split('-')[2]})`
+        : 'tomato'
+    },
+    shapeWB () {
+      var colors = this.state.loggedIn ? this.state.account.color_str.split('-') : [0, 0, 0]
+      return (parseInt(colors[0]) + parseInt(colors[1]) + parseInt(colors[2])) / 3 > 128 ? 'b' : 'w'
+    },
+    introStripeStyle: function () {
+      return {
+        width: this.layout.windowWidth,
+        backgroundColor: this.myColor,
+        color: this.shapeWB === 'w' ? 'white' : 'black'
+      }
+    },
+    shapePatternStyle: function () {
+      return {
+        width: this.layout.windowWidth,
+        backgroundImage: `url("http://13.125.24.19:8001/interface/shape_pattern_${this.myShape}_${this.shapeWB}.png")`
+
+      }
     }
   },
   mounted () {
@@ -477,12 +518,16 @@ export default {
     bus.$on('login', emPw => {
       this.login(emPw[0], emPw[1])
     })
+    bus.$on('updateAccount', response => {
+      this.updateAccount(response)
+    })
     bus.$on('afterPostingUpload', () => {
       this.afterPostingUpload()
     })
 
     // 토큰 로그인 시도
     this.access()
+    // 대시보드의 컨텐츠 다운로드
     this.getPostings()
   },
   created () {
