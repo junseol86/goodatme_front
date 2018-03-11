@@ -5,7 +5,7 @@
         <div id="mypage" :style="{width: layout.centeredWidth}">
           <div id="shapeSection" :style="shapeSectionStyle">
             <div id="shape" :style="shapeStyle" @click="setPopup('2', 'question')">
-              <img :src="`http://13.125.24.19:8001/interface/shp_lg_strk_${shapeWB}_${state.account.shape}.png`">
+              <img :src="`http://13.125.24.19:8001/interface/shp_lg_strk_${shapeWB}_${myShape}.png`">
             </div>
             <div id="shapeDesc" :style="shapeDescStyle">
               <span>{{state.account.nickname}}님은</span><br>
@@ -131,11 +131,14 @@ export default {
     shapeWB () {
       return (this.colors[0] + this.colors[1] + this.colors[2]) / 3 > 128 ? 'b' : 'w'
     },
+    myShape: function () {
+      return this.state.loggedIn && this.state.account.shape != null ? this.state.account.shape : 'random'
+    },
     shapeAdj () {
-      return this.$consts.shapes[this.state.account.shape][2]
+      return this.$consts.shapes[this.myShape][2]
     },
     shapeNick () {
-      return this.$consts.shapes[this.state.account.shape][1]
+      return this.$consts.shapes[this.myShape][1]
     },
     colorLabelStyle () {
       return {

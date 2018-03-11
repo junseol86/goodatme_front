@@ -68,9 +68,12 @@
         <div id="intro-stripe" :style="introStripeStyle">
           <div id="shape-pattern" :style="shapePatternStyle">
           </div>
-          <div class="message" v-if="!state.loggedIn" :style="{width: layout.windowWidth}">
+          <div class="message" v-if="myShape === 'random'" :style="{width: layout.windowWidth}">
             나를 위한 공간을 찾아보세요.<br>
-            <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('login')">로그인</span>
+            <span v-if="!state.loggedIn">
+              <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('login')">로그인</span>
+            </span>
+            <span v-if="state.loggedIn" class="trHv" @click="setPopup('mypage')">나의 라이프스타일 설정하기</span>
           </div>
           <div class="message" v-else :style="{width: layout.windowWidth}">
             {{shapeAdj}}<br>
@@ -106,7 +109,7 @@
                   <div class="brief" :style="{height: content.calendar.briefHeight}">
                     {{util('strLimit', [posting.brief, 60])}}
                   </div>
-                  <div class="date">{{posting.createdAt.slice(5, 7)}}</div>
+                  <div class="date">{{posting.createdAt.slice(8, 10)}}</div>
                 </div>
               </div>
             </div>
@@ -211,6 +214,7 @@ export default {
           email: '',
           nickname: '',
           shape: '',
+          sahpe_sbsc: '',
           color_r: '',
           color_g: '',
           color_b: '',
@@ -467,13 +471,13 @@ export default {
       return this.state.loggedIn ? `${this.state.account.nickname}님께서 구독중이신 라이프스타일` : '구독할 라이프스타일을 선택하세요.'
     },
     shapeAdj () {
-      return this.$consts.shapes[this.state.account.shape][2]
+      return this.$consts.shapes[this.myShape][2]
     },
     shapeNick () {
-      return this.$consts.shapes[this.state.account.shape][1]
+      return this.$consts.shapes[this.myShape][1]
     },
     myShape: function () {
-      return this.state.loggedIn ? this.state.account.shape : 'random'
+      return this.state.loggedIn && this.state.account.shape != null ? this.state.account.shape : 'random'
     },
     myColor: function () {
       return this.state.loggedIn
