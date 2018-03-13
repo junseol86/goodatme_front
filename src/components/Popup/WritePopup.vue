@@ -126,7 +126,7 @@ export default {
     finishWrite () {
       this.editor.initialized = false
       window.tinymce.remove('#tm_write')
-      bus.$emit('setPopup', '')
+      bus.$emit('setPopup', ['1', ''])
     },
     initTinyMCE () {
       if (this.editor.initialized !== true) {

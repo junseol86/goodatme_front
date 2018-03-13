@@ -10,7 +10,7 @@
             <span class="trHv register">회원가입</span>
             <span class="trHv ok" @click="login()">확인</span>
           </div>
-          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('')"/>
+          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('1', '')"/>
         </div>
       </div>
     </div>
@@ -29,8 +29,8 @@ export default {
     }
   },
   methods: {
-    setPopup (which) {
-      bus.$emit('setPopup', which)
+    setPopup (layer, which) {
+      bus.$emit('setPopup', [layer, which])
     },
     login () {
       bus.$emit('login', [this.email, this.password])

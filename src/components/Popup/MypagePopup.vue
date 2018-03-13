@@ -30,7 +30,7 @@
               </div>
             </div>
           </div>
-          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('', '')"/>
+          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('1', '')"/>
         </div>
       </div>
     </div>
@@ -51,8 +51,8 @@ export default {
     }
   },
   methods: {
-    setPopup (idx, which) {
-      bus.$emit('setPopup' + idx, which)
+    setPopup (layer, which) {
+      bus.$emit('setPopup', [layer, which])
     },
     // 색 조정 후 서버로 전송
     setAjMoving (e, onOff) {

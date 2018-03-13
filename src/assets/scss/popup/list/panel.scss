@@ -1,0 +1,43 @@
+.list-panel {
+  #panel {
+    position: relative;
+    background-color: white;
+    overflow: hidden;
+  }
+  #panelTop {
+    position: fixed;
+    top: 0;
+    height: 64px;
+    background-color: rgba(255, 255, 255, 0.9);
+    text-align: left;
+    > div {
+      display: inline-block;
+      color: #333;
+      &.button {
+        height: 36px;
+        line-height: 36px;
+        margin: 14px;
+        font-size: 1.2em;
+        padding: 0 14px;
+        border-radius: 24px;
+        &.on {
+          color: white;
+          background-color: black;
+        }
+      }
+      &:first-child {
+        margin-left: 24px;
+      }
+    }
+    > span {
+      margin: 0 16px;
+    }
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+}

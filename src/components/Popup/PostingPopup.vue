@@ -48,7 +48,7 @@ export default {
       })
     },
     close () {
-      bus.$emit('setPopup', '')
+      bus.$emit('setPopup', ['1', ''])
     }
   },
   computed: {

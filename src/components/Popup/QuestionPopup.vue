@@ -30,8 +30,8 @@ export default {
     }
   },
   methods: {
-    setPopup (idx, which) {
-      bus.$emit('setPopup' + idx, which)
+    setPopup (layer, which) {
+      bus.$emit('setPopup', [layer, which])
     },
     // 질문들 다운로드
     getQuestions () {

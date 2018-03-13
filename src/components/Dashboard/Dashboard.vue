@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <div id="dashboard_wrapper" :class="popup === '' ? '' : 'noScroll'"
+    <div id="dashboard_wrapper" :class="popup_1 === '' ? '' : 'noScroll'"
     :style="{width: layout.windowWidth, height: layout.windowHeight}">
       <!-- 상단바 -->
       <div id="topbar" :style="{width: layout.windowWidth}">
@@ -11,7 +11,7 @@
           </div>
           <div id="topbar-right">
             <span v-if="!state.loggedIn">
-              <span class="trHv" id="login-btn" @click="setPopup('login')">
+              <span class="trHv" id="login-btn" @click="setPopup('1', 'login')">
                 Login
               </span>
               |
@@ -20,7 +20,7 @@
               </span>
             </span>
             <span v-else>
-              <span class="trHv" id="mypage-btn" @click="setPopup('mypage')">
+              <span class="trHv" id="mypage-btn" @click="setPopup('1', 'mypage')">
                 Mypage
               </span>
               <span v-if="state.account.type == 'ADMIN'" class="trHv" id="write-post-btn" @click="beginWrite()">
@@ -31,7 +31,7 @@
                 Logout
               </span>
             </span>
-            <img class="trHv" src="../../assets/img/topbar_search.png">
+            <img class="trHv" @click="setPopup('0', 'search')" src="../../assets/img/topbar_search.png">
           </div>
         </div>
       </div>
@@ -71,9 +71,9 @@
           <div class="message" v-if="myShape === 'random'" :style="{width: layout.windowWidth}">
             나를 위한 공간을 찾아보세요.<br>
             <span v-if="!state.loggedIn">
-              <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('login')">로그인</span>
+              <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('1', 'login')">로그인</span>
             </span>
-            <span v-if="state.loggedIn" class="trHv" @click="setPopup('mypage')">나의 라이프스타일 설정하기</span>
+            <span v-if="state.loggedIn" class="trHv" @click="setPopup('1', 'mypage')">나의 라이프스타일 설정하기</span>
           </div>
           <div class="message" v-else :style="{width: layout.windowWidth}">
             {{shapeAdj}}<br>
@@ -88,7 +88,7 @@
               Jan 2018
             </div>
             <div class="more">
-              <span class="gray-btn trHv">전체보기</span>
+              <span class="gray-btn trHv" @click="setPopup('0', 'calendar')">전체보기</span>
             </div>
             <div class="list">
               <div v-for="posting in content.calendar.list" :key="posting.idx" @click="openPosting(posting.idx)">
@@ -142,7 +142,7 @@
               <td width="80">_{{category}}</td>
               <td class="underline"></td>
               <td width="88">
-                <span class="gray-btn trHv">전체보기</span>
+                <span  @click="setPopup('0',category)" class="gray-btn trHv">전체보기</span>
               </td>
             </tr>
           </table>
@@ -174,14 +174,17 @@
         </div>
 
       </div>
-      <div class="popup">
-        <login-popup v-if="popup == 'login'" :layout="layout" :state="state"></login-popup>
-        <mypage-popup v-if="popup == 'mypage' && state.loggedIn" :layout="layout" :state="state"></mypage-popup>
-        <write-popup v-if="popup == 'write'" :layout="layout" :state="state"></write-popup>
-        <posting-popup v-if="popup == 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
+      <div class="popup_0">
+        <list-panel v-if="popup_0.length !== 0" :tab="popup_0" :layout="layout" :state="state"></list-panel>
       </div>
-      <div class="popup2">
-        <question-popup v-if="popup2 == 'question'" :layout="layout" :state="state"></question-popup>
+      <div class="popup_1">
+        <login-popup v-if="popup_1 === 'login'" :layout="layout" :state="state"></login-popup>
+        <mypage-popup v-if="popup_1 === 'mypage' && state.loggedIn" :layout="layout" :state="state"></mypage-popup>
+        <write-popup v-if="popup_1 === 'write'" :layout="layout" :state="state"></write-popup>
+        <posting-popup v-if="popup_1 === 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
+      </div>
+      <div class="popup_2">
+        <question-popup v-if="popup_2 == 'question'" :layout="layout" :state="state"></question-popup>
       </div>
     </div>
   </div>
@@ -195,9 +198,10 @@ import QuestionPopup from '../Popup/QuestionPopup'
 import MypagePopup from '../Popup/MypagePopup'
 import WritePopup from '../Popup/WritePopup'
 import PostingPopup from '../Popup/PostingPopup'
+import ListPanel from '../Popup/List/ListPanel'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {ImageBg, LoginPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup},
+  components: {ImageBg, LoginPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup, ListPanel},
   name: 'Dashboard',
   data () {
     return {
@@ -222,8 +226,9 @@ export default {
           type: ''
         }
       },
-      popup: '',
-      popup2: '',
+      popup_0: '',
+      popup_1: '',
+      popup_2: '',
       postingOn: '',
       content: {
         topSlide: {
@@ -280,15 +285,8 @@ export default {
       this.content.postings.canvasHeight = this.centerWCanvasH()[1] + 'px'
       bus.$emit('setBg')
     },
-    fillBg (el) {
-      console.log('HH')
-      console.log(el)
-    },
-    setPopup (which) {
-      this.popup = which
-    },
-    setPopup2 (which) {
-      this.popup2 = which
+    setPopup (layer, which) {
+      this['popup_' + layer] = which
     },
     codeToColor (code) {
       let offset = 60
@@ -397,7 +395,7 @@ export default {
         }
       }).then((response) => {
         this.updateAccount(response)
-        this.popup = ''
+        this.popup_1 = ''
       }).catch((error) => {
         alert(error.response.data)
       })
@@ -413,7 +411,7 @@ export default {
           }
         }).then((response) => {
           this.updateAccount(response)
-          this.popup = ''
+          this.popup_1 = ''
         }).catch((error) => {
           alert(error.response.data)
           this.logout(true)
@@ -436,7 +434,7 @@ export default {
     },
     // 게시물 작성 팝업을 열고 에디터 초기화
     beginWrite () {
-      this.setPopup('write')
+      this.setPopup('1', 'write')
       bus.$emit('initEditor', false)
     },
     setMock () {
@@ -459,7 +457,7 @@ export default {
     },
     openPosting (idx) {
       this.postingOn = idx
-      this.setPopup('posting')
+      this.setPopup('1', 'posting')
     },
     afterPostingUpload () {
       this.popup = ''
@@ -513,11 +511,8 @@ export default {
     })
     this.setMock()
 
-    bus.$on('setPopup', which => {
-      this.setPopup(which)
-    })
-    bus.$on('setPopup2', which => {
-      this.setPopup2(which)
+    bus.$on('setPopup', lw => {
+      this.setPopup(lw[0], lw[1])
     })
     bus.$on('login', emPw => {
       this.login(emPw[0], emPw[1])
