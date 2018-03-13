@@ -7,21 +7,21 @@
           </div>
         </div>
         <div id="panelTop" :style="panelTopStyle">
-          <div :class="`button trHv ${tab === 'calendar' ? 'on' : ''}`" @click="setPopupTap('0', 'calendar')">
+          <div :class="`button trHv ${tab === 'calendar' ? 'on' : ''}`" @click="setPopupTab('0', 'calendar')">
             calendar
           </div>
           <span>|</span>
-          <div :class="`button trHv ${tab === 'eat' ? 'on' : ''}`" @click="setPopupTap('0', 'eat')">
+          <div :class="`button trHv ${tab === 'eat' ? 'on' : ''}`" @click="setPopupTab('0', 'eat')">
             eat
           </div>
-          <div :class="`button trHv ${tab === 'play' ? 'on' : ''}`" @click="setPopupTap('0', 'play')">
+          <div :class="`button trHv ${tab === 'play' ? 'on' : ''}`" @click="setPopupTab('0', 'play')">
             play
           </div>
-          <div :class="`button trHv ${tab === 'work' ? 'on' : ''}`" @click="setPopupTap('0', 'work')">
+          <div :class="`button trHv ${tab === 'work' ? 'on' : ''}`" @click="setPopupTab('0', 'work')">
             work
           </div>
           <span>|</span>
-          <div :class="`button trHv ${tab === 'search' ? 'on' : ''}`" @click="setPopupTap('0', 'search')">
+          <div :class="`button trHv ${tab === 'search' ? 'on' : ''}`" @click="setPopupTab('0', 'search')">
             search
           </div>
           <img class="close trHv" @click="setPopup('0', '')" src="../../../assets/img/popup_x_72.png"/>
