@@ -5,12 +5,11 @@
     font-size: 1.1em;
     overflow: hidden;
     #close {
-      position: absolute;
+      position: fixed;
       z-index: 100;
       top: 24px;
-      right: 24px;
-      width: 72px;
-      height: 72px;
+      width: 36px;
+      height: 36px;
     }
     #topImage {
       position: relative;

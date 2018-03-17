@@ -11,4 +11,5 @@
     spade: ['스페이드', '컬쳐팔로어', '지치지 않는 유쾌함으로 문화를 즐기는 ', '문화생활, 유쾌함'],
     random: ['(미정)', '← 원을 클릭하여 테스트하세요.', '라이프스타일이 파악되지 않았습니다.', '(미정)']
   }
+  this.shapeNames = ['circle', 'triangle', 'square', 'star', 'infinity', 'clover', 'diamond', 'heart', 'spade']
 }).call(this)

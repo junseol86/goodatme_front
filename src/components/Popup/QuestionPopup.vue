@@ -43,7 +43,6 @@ export default {
     },
     // 테스트 결과로 사용자의 모양을 결정하여 서버로 전송
     score () {
-      var shapes = ['circle', 'triangle', 'square', 'star', 'infinity', 'clover', 'diamond', 'heart', 'spade']
       var score = {
         circle: 0,
         triangle: 0,
@@ -57,14 +56,14 @@ export default {
       }
       var _this = this
       this.choices.map((choice, idx) => {
-        shapes.map((shape) => {
+        this.$consts.shapeNames.map((shape) => {
           var vl = _this.questions[idx][shape] * choice
           score[shape] += vl > 0 ? vl : 0
         })
       })
       var max = 0
       var winner = ''
-      shapes.map((shape) => {
+      this.$consts.shapeNames.map((shape) => {
         if (score[shape] > max) {
           max = score[shape]
           winner = shape

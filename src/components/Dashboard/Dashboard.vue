@@ -8,6 +8,13 @@
           <div id="topbar-left">
             <img class="trHv" src="../../assets/img/topbar_menu.png">
               지오오디_에이티.엠이
+              <div class="rollover">
+                <div class="trHv">favorite</div>
+                <div class="trHv">calendar</div>
+                <div class="trHv">eat</div>
+                <div class="trHv">play</div>
+                <div class="trHv">work</div>
+              </div>
           </div>
           <div id="topbar-right">
             <span v-if="!state.loggedIn">
@@ -126,12 +133,15 @@
             </div>
           </div>
           <div class="edit centered" :style="{width: layout.centeredWidth}">
-            <span class="gray-btn trHv">편집하기</span>
+            <span class="gray-btn trHv" @click="setPopup('1', 'mypage')">편집하기</span>
           </div>
-          <div class="subscribings centered" :style="{width: layout.centeredWidth}">
-            <div v-for="(subs, idx) in content.lifestyle.subscribings" :key="idx" class="trHv" :style="codeToColor(subs.color)">
-              <img :src="'http://13.125.24.19:8001/interface/subsc_' + subs.shape + '.png'">
+          <div v-if="state.loggedIn" class="subscribings centered" :style="{width: layout.centeredWidth}">
+            <div v-for="(shape, idx) in $util.noEmptyStrArray(state.account.shape_sbsc.split(','))"
+            :key="idx" v-if="shape !== state.account.shape" class="trHv" :style="{backgroundColor: subscColors[idx]}">
+              <img :src="'http://13.125.24.19:8001/interface/subsc_' + shape + '.png'">
             </div>
+            <span v-if="$util.noEmptyStrArray(state.account.shape_sbsc.split(',')).length === 0"
+            class="trHv" @click="setPopup('1', 'mypage')">구독하시는 라이프스타일이 없습니다.  [추가하기]</span>
           </div>
         </div>
 
@@ -206,6 +216,7 @@ export default {
   data () {
     return {
       categories: ['eat', 'play', 'work'],
+      subscColors: this.$util.randomSubscColors(),
       layout: {
         windowWidth: '',
         windowHeight: '',
@@ -277,6 +288,7 @@ export default {
       this.layout.windowWidth = winW + 'px'
       this.layout.windowHeight = window.innerHeight + 'px'
       this.layout.centeredWidth = cntrW + 'px'
+      this.layout.closeRight = (winW - cntrW) / 2 + 24 + 'px'
       this.layout.topSlideH = cntrW * 0.4 + 'px'
       this.content.calendar.imgWidth = cntrW / 5 - 24 + 'px'
       this.content.calendar.imgHeight = cntrW * 0.1 + 'px'

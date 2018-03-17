@@ -3,7 +3,8 @@
     <div class="popup_wrapper" :style="{width: layout.windowWidth, height: layout.windowHeight}">
       <div :style="{width: layout.windowWidth}">
         <div id="board" :style="{width: layout.centeredWidth}">
-          <img class="trHv" id="close" src="../../assets/img/posting_x.png" @click="close()"/>
+          <img class="trHv"
+          :style="{right: layout.closeRight}" id="close" src="../../assets/img/popup_x_72.png" @click="close()"/>
           <div id="topImage" :style="topImageSize">
             <image-bg v-if="posting !== ''"
             :width="topImageSize.width" :height="topImageSize.height"

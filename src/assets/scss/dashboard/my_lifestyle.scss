@@ -21,11 +21,11 @@
   }
   .edit {
     text-align: right;
-    margin-top: 36px;
+    margin-top: 16px;
   }
   .subscribings {
     text-align: right;
-    margin-top: 20px;
+    margin-top: 12px;
     text-align: center;
     > div {
       display: inline-block;
@@ -39,6 +39,9 @@
         height: 100%;
         opacity: 0.67
       }
+    }
+    span {
+      font-size: 1.5em;
     }
   }
 }

@@ -68,8 +68,47 @@
               position: absolute;
             }
           }
+          .adjustLabels {
+            margin-top: 4px;
+            overflow: hidden;
+            &::after {
+              clear: both;
+            }
+          }
+        }
+      }
+      .subscription {
+        overflow: hidden;
+        &::after {
+          clear: both;
+        }
+        > div {
+          float: left;
+          width: 30%;
+          padding-bottom: 24px;
+          tr > td:first-child > img {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+          tr > td:last-child {
+            vertical-align: middle;
+            padding-left: 24px;
+            text-align: left;
+            line-height: 1.6em;
+            > span {
+              font-size: 1.2em;
+              font-weight: bold;
+            }
+          }
         }
       }
     }    
+    #close {
+      position: fixed;
+      top: 24px;
+      width: 36px;
+      height: 36px;
+    }
   }
 }

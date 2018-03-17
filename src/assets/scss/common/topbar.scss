@@ -15,8 +15,27 @@
       height: 48px;
       line-height: 48px;
       &#topbar-left {
+        position: relative;
         float: left;
         font-size: 1.2em;
+        &:hover {
+          .rollover {
+            display: block;
+          }
+        }
+        .rollover {
+          position: absolute;
+          top: 48px;
+          left: 0px;
+          color: white;
+          background-color: rgba(0, 0, 0, 0.8);
+          display: none;
+          > div {
+            font-size: 1.1em;
+            padding: 0 36px;
+            text-align: left;
+          }
+        }
       }
       &#topbar-right {
         float: right;

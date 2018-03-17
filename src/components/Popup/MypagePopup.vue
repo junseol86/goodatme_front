@@ -27,10 +27,38 @@
                     {{colors[idx]}}
                   </div>
                 </div>
+                <div class="adjustLabels">
+                  <div :style="labelLeftStyle">{{['차분', '양', '즉흥'][idx]}}</div>
+                  <div :style="labelRightStyle">{{['활동', '질', '계획'][idx]}}</div>
+                </div>
+                <div :style="colorResultStyle">
+                  #{{colorResult(idx)}}
+                </div>
+              </div>
+            </div>
+            <div :style="{fontSize: cw/ 36 + 'px', paddingTop: cw / 16 + 'px'}">구독하는 라이프스타일</div>
+            <div class="subscription" :style="{paddingTop: cw / 24 + 'px'}">
+              <div v-for="(shape, idx) in Object.keys($consts.shapes)" :key="idx"
+              v-if="idx < 9 && shape !== state.account.shape"
+              class="trHv" @click="toggleSubscShape(shape)">
+                <table>
+                  <tr>
+                    <td :style="subscShapeStyle(shape, idx)">
+                      <img
+                      :style="{opacity: state.account.shape_sbsc.split(',').includes(shape) ? 0.67 : 0.1}"
+                      :src="'http://13.125.24.19:8001/interface/subsc_' + shape + '.png'">
+                    </td>
+                    <td :style="{fontSize: cw / 92 + 'px'}">
+                      {{$consts.shapes[shape][2]}}<br>
+                      <span>{{$consts.shapes[shape][1]}}</span>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
-          <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('1', '')"/>
+          <img class="trHv"
+          :style="{right: layout.closeRight}" id="close" src="../../assets/img/popup_x_72.png" @click="setPopup('1', '')"/>
         </div>
       </div>
     </div>
@@ -46,6 +74,7 @@ export default {
   data () {
     return {
       colors: [0, 0, 0],
+      subscColors: this.$util.randomSubscColors(),
       ajMoving: false,
       shouldUpload: false
     }
@@ -99,6 +128,50 @@ export default {
         left: x - (handleSize / 2) + 'px',
         top: y - (handleSize / 2) + 'px'
       }
+    },
+    colorResult (idx) {
+      var lr = this.colors[idx] < 128 ? 0 : 1
+      return [['정적', '활동적'], ['양적', '합리적'], ['즉흥적', '계획적']][idx][lr]
+    },
+    subscShapeStyle (shape, idx) {
+      var subscs = this.state.account.shape_sbsc.split(',')
+      return {
+        width: this.cw / 20 + 'px',
+        height: this.cw / 20 + 'px',
+        borderRadius: this.cw / 40 + 'px',
+        backgroundColor: subscs.includes(shape) ? this.subscColors[idx] : '#eee'
+      }
+    },
+    toggleSubscShape (shape) {
+      var hasOne = this.state.account.shape_sbsc.split(',').includes(shape)
+      var newSubsc = []
+      this.state.account.shape_sbsc.split(',').map((it) => {
+        if (it.length > 0 && it !== shape && it !== this.state.account.shape) {
+          newSubsc.push(it)
+        }
+      })
+      if (!hasOne) {
+        newSubsc.push(shape)
+      }
+      var result = ''
+      newSubsc.map((it) => {
+        result += (it + ',')
+      })
+      var toPost = this.$qs.stringify({
+        token: this.$cookie.get('token'),
+        shape_sbsc: result
+      })
+      this.$axios.put(apiUrl + 'account/sbsc', toPost, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+        .then((response) => {
+          bus.$emit('updateAccount', response)
+          this.shouldUpload = false
+        }).catch(err => {
+          console.log(err)
+        })
     }
   },
   computed: {
@@ -154,8 +227,8 @@ export default {
     // 선 두깨: 10
     colorAdjustStyle () {
       return {
-        width: 400 * this.cw / 1600 + 'px',
-        height: 178 * this.cw / 1600 + 'px'
+        width: 400 * this.cw / 1600 + 'px'
+        // height: 178 * this.cw / 1600 + 'px'
       }
     },
     colorAdjustInnerStyle () {
@@ -180,6 +253,26 @@ export default {
         r: 164 * this.cw / 1600,
         // 반원 띠의 두께를 고려한 실제 핸들이 움직일 반지름
         adjR: 145 * this.cw / 1600
+      }
+    },
+    labelLeftStyle () {
+      return {
+        float: 'left',
+        width: 110 * this.cw / 1600 + 'px',
+        fontSize: this.cw / 1200 + 'em'
+      }
+    },
+    labelRightStyle () {
+      return {
+        float: 'right',
+        width: 110 * this.cw / 1600 + 'px',
+        fontSize: this.cw / 1200 + 'em'
+      }
+    },
+    colorResultStyle () {
+      return {
+        fontSize: this.cw / 700 + 'em',
+        marginTop: this.cw / 50 + 'px'
       }
     }
   },

@@ -21,6 +21,10 @@
             work
           </div>
           <span>|</span>
+          <div :class="`button trHv ${tab === 'favorite' ? 'on' : ''}`" @click="setPopupTab('0', 'favorite')">
+            favorite
+          </div>
+          <span>|</span>
           <div :class="`button trHv ${tab === 'search' ? 'on' : ''}`" @click="setPopupTab('0', 'search')">
             search
           </div>
