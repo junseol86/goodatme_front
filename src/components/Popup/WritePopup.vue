@@ -203,7 +203,7 @@ export default {
         this.setContent()
         this.posting.token = this.$cookie.get('token')
         var toPost = this.$qs.stringify(this.posting)
-        this.$axios.post(apiUrl + 'posting/posting', toPost, {
+        this.$axios.post(apiUrl + 'posting', toPost, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           }

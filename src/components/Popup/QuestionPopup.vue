@@ -35,7 +35,7 @@ export default {
     },
     // 질문들 다운로드
     getQuestions () {
-      this.$axios.get(apiUrl + 'question/question').then((response) => {
+      this.$axios.get(apiUrl + 'question').then((response) => {
         this.questions = response.data
       }).catch((error) => {
         alert(error.response.data)

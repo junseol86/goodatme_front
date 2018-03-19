@@ -1,0 +1,48 @@
+.category_thumb {
+  position: relative;
+  float: left;
+  .blurCut {
+    overflow: hidden;
+  }
+  &:hover {
+    .imgBg {
+      -webkit-filter: blur(0);
+      -moz-filter: blur(0);
+      -o-filter: blur(0);
+      -ms-filter: blur(0);
+      filter: blur(0);
+    }
+  }
+  .imgBg {
+    -webkit-filter: blur(4px);
+    -moz-filter: blur(4px);
+    -o-filter: blur(4px);
+    -ms-filter: blur(4px);
+    filter: blur(4px);
+  }
+  .blackBg {
+    position: absolute;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.67);
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.33);
+    }
+    > * {
+      position: absolute;
+      img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .subCategory {
+        background-color: rgba(0, 0, 0, 0.5);
+        border: 1px solid white;
+        margin-left: 8px;
+        padding: 4px 8px;
+        border-radius: 60px;
+        font-weight: 0.9em;
+      }
+    }
+  }
+}

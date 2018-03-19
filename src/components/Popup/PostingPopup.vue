@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     downloadPosting () {
-      this.$axios.get(apiUrl + 'posting/posting/' + this.postingOn).then((response) => {
+      this.$axios.get(apiUrl + 'posting/' + this.postingOn).then((response) => {
         this.writer = response.data.writer
         this.posting = response.data.posting
       })

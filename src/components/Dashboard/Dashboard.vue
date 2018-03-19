@@ -9,11 +9,11 @@
             <img class="trHv" src="../../assets/img/topbar_menu.png">
               지오오디_에이티.엠이
               <div class="rollover">
-                <div class="trHv">favorite</div>
-                <div class="trHv">calendar</div>
-                <div class="trHv">eat</div>
-                <div class="trHv">play</div>
-                <div class="trHv">work</div>
+                <div class="trHv" @click="setPopup('0', 'favorite')">favorite</div>
+                <div class="trHv" @click="setPopup('0', 'calendar')">calendar</div>
+                <div class="trHv" @click="setPopup('0', 'eat')">eat</div>
+                <div class="trHv" @click="setPopup('0', 'play')">play</div>
+                <div class="trHv" @click="setPopup('0', 'work')">work</div>
               </div>
           </div>
           <div id="topbar-right">
@@ -462,7 +462,7 @@ export default {
       })
     },
     getPostings () {
-      this.$axios.get(apiUrl + 'posting/posting')
+      this.$axios.get(apiUrl + 'posting')
         .then((response) => {
           this.content.calendar.list = response.data
         })
@@ -534,6 +534,9 @@ export default {
     })
     bus.$on('afterPostingUpload', () => {
       this.afterPostingUpload()
+    })
+    bus.$on('openPosting', (idx) => {
+      this.openPosting(idx)
     })
 
     // 토큰 로그인 시도

@@ -29,8 +29,8 @@ export default {
       img.onload = () => {
         var imgW = img.width
         var imgH = img.height
-        var conW = parseInt(this.width.replace('px', ''))
-        var conH = parseInt(this.height.replace('px', ''))
+        var conW = parseInt(this.width.replace('px', '')) + 16
+        var conH = parseInt(this.height.replace('px', '')) + 16
         var bgW = 0
         var bgH = 0
         var bgX = 0
@@ -45,7 +45,7 @@ export default {
           bgY = -(bgH - conH) / 2
         }
         this.style.backgroundSize = `${bgW}px ${bgH}px`
-        this.style.backgroundPosition = `${bgX}px ${bgY}px`
+        this.style.backgroundPosition = `${bgX - 8}px ${bgY - 8}px`
       }
     }
   },

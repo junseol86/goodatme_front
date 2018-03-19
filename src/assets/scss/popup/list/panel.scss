@@ -3,6 +3,13 @@
     position: relative;
     background-color: white;
     overflow: hidden;
+    .list {
+      margin-top: 92px;
+      overflow: hidden;
+      &::after {
+        clear: both;
+    }
+}
   }
   #panelTop {
     position: fixed;

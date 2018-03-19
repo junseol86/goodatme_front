@@ -31,7 +31,6 @@
         result.push(it)
       }
     })
-    console.log(result)
     return result
   }
 }).call(this)
