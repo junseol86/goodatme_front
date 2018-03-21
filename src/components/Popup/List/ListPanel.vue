@@ -1,12 +1,17 @@
 <template>
   <div class="list-panel">
-    <div class="popup_wrapper" :style="{width: layout.windowWidth, height: layout.windowHeight}">
-      <div :style="{width: layout.windowWidth}">
+    <div class="popup_wrapper" :style="{width: layout.windowWidth, height: layout.windowHeight}"
+    ref="scrollCon" @scroll="onScroll()">
+      <div :style="{width: layout.windowWidth}" ref="scroll">
         <!-- 리스트들이 나타나는 곳 -->
         <div id="panel" :style="{width: layout.centeredWidth, minHeight: layout.windowHeight}">
           <div class="list" :style="listStyle">
             <category-thumb v-for="(posting, idx) in categoryList" :key="idx"
             :lrPadding="lrPadding" :state="state" :layout="layout" :posting="posting"></category-thumb>
+            <calendar-thumb v-for="(posting, idx) in calendarList" :key="idx"
+            :lrPadding="lrPadding" :state="state" :layout="layout" :posting="posting"
+            :idx="idx"
+            ></calendar-thumb>
           </div>
         </div>
         <!-- 상단바 -->
@@ -41,22 +46,34 @@
 
 <script>
 import {bus} from '../../../main.js'
+import CalendarThumb from '../../Popup/List/CalendarThumb'
 import CategoryThumb from '../../Popup/List/CategoryThumb'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {CategoryThumb},
+  components: {CategoryThumb, CalendarThumb},
   props: ['tab', 'layout', 'state'],
   name: 'ListPanel',
   data () {
     return {
       lrPadding: 64,
       page: 0,
+      loadMore: false,
       calendarList: [],
       categoryList: [],
       searchList: []
     }
   },
   methods: {
+    onScroll () {
+      if (!this.loadMore) {
+        return
+      }
+      if (this.$refs.scrollCon.scrollTop > this.$refs.scroll.clientHeight - (this.$refs.scrollCon.clientHeight * 1.5)) {
+        console.log(this.page)
+        this.page += 1
+        this.loadList(this.tab, this.page)
+      }
+    },
     setPopup (layer, which) {
       bus.$emit('setPopup', [layer, which])
     },
@@ -68,12 +85,16 @@ export default {
       this.calendarList = []
       this.categoryList = []
       this.searchList = []
+      this.loadMore = true
+      this.loadList(which, 0)
+    },
+    loadList (which, page) {
       if (which === 'calendar') {
-        this.getCalendarList(0)
+        this.getCalendarList(page)
       } else if (which === 'search') {
       } else if (which === 'favorite') {
       } else {
-        this.getCategoryList(which, 0)
+        this.getCategoryList(which, page)
       }
     },
     // 조건을 사용자에게 맞춤
@@ -89,6 +110,9 @@ export default {
     },
     // 달력 리스트
     getCalendarList (page) {
+      if (!this.loadMore) {
+        return
+      }
       this.page = page
       if (page === 0) {
         this.calendarList = []
@@ -99,12 +123,27 @@ export default {
         offset: this.page
       }
       cond = this.customize(cond)
+      this.loadMore = false
       this.$axios.post(apiUrl + 'posting/calendar', this.$qs.stringify(cond), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }).then((response) => {
-        this.calendarList = this.calendarList.concat(response.data)
+        if (response.data.length !== 0) {
+          var withMY = []
+          response.data.map((it, idx) => {
+            if (this.showMonthYear(response.data, idx)) {
+              withMY.push({
+                showMonthYear: true,
+                createdAt: it.createdAt
+              })
+            }
+            it.showMontyYear = false
+            withMY.push(it)
+          })
+          this.calendarList = this.calendarList.concat(withMY)
+          this.loadMore = response.data.length > 0
+        }
       })
     },
     // eat, play, work별 리스트
@@ -120,13 +159,29 @@ export default {
         offset: this.page
       }
       cond = this.customize(cond)
+      this.loadMore = false
       this.$axios.post(apiUrl + 'posting/category', this.$qs.stringify(cond), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }).then((response) => {
+        this.loadMore = response.data.length > 0
         this.categoryList = this.categoryList.concat(response.data)
       })
+    },
+    showMonthYear (list, idx) {
+      if (idx < list.length - 1) {
+        if (idx === 0) {
+          if (this.calendarList.length === 0) {
+            return true
+          } else if (this.calendarList[this.calendarList.length - 1].createdAt.substring(0, 7) !==
+          list[idx].createdAt.substring(0, 7)) {
+          }
+        } else if (list[idx - 1].createdAt.substring(0, 7) !== list[idx].createdAt.substring(0, 7)) {
+          return true
+        }
+      }
+      return false
     }
   },
   computed: {

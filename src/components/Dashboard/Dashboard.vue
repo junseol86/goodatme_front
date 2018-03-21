@@ -472,7 +472,7 @@ export default {
       this.setPopup('1', 'posting')
     },
     afterPostingUpload () {
-      this.popup = ''
+      this.popup_1 = ''
       this.getPostings()
     }
   },

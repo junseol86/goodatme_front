@@ -12,4 +12,18 @@
     random: ['(미정)', '← 원을 클릭하여 테스트하세요.', '라이프스타일이 파악되지 않았습니다.', '(미정)']
   }
   this.shapeNames = ['circle', 'triangle', 'square', 'star', 'infinity', 'clover', 'diamond', 'heart', 'spade']
+  this.monthNames = {
+    '01': 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec'
+  }
 }).call(this)
