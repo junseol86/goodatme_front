@@ -6,6 +6,21 @@
         <!-- 리스트들이 나타나는 곳 -->
         <div id="panel" :style="{width: layout.centeredWidth, minHeight: layout.windowHeight}">
           <div class="list" :style="listStyle">
+            <div class="search" v-if="tab === 'search'">
+              <div class="inputCon">
+                <div class="categoryOpt">
+                  <div :class="ctgrOpt == '' ? 'on' : ''" @click="setCtgrOpt('')"> _all </div>
+                  <div :class="ctgrOpt == 'eat' ? 'on' : ''" @click="setCtgrOpt('eat')">_eat</div>
+                  <div :class="ctgrOpt == 'play' ? 'on' : ''" @click="setCtgrOpt('play')">_play</div>
+                  <div :class="ctgrOpt == 'work' ? 'on' : ''" @click="setCtgrOpt('work')">_work</div>
+                </div>
+                <img src="../../../assets/img/topbar_search.png">
+                <input type="text" v-model="search" @keyup="searchKeyUp" placeholder="지역명, 장소명, 또는 해시태그"/>
+              </div>
+              <div class="hashtags">
+                <span v-for="(hashtag, idx) in hashtags" :key="idx" @click="searchHashtag(hashtag)">#{{hashtag}}</span>
+              </div>
+            </div>
             <category-thumb v-for="(posting, idx) in categoryList" :key="idx"
             :lrPadding="lrPadding" :state="state" :layout="layout" :posting="posting"></category-thumb>
             <calendar-thumb v-for="(posting, idx) in calendarList" :key="idx"
@@ -60,7 +75,10 @@ export default {
       loadMore: false,
       calendarList: [],
       categoryList: [],
-      searchList: []
+      searchList: [],
+      hashtags: [],
+      ctgrOpt: '',
+      search: ''
     }
   },
   methods: {
@@ -69,10 +87,12 @@ export default {
         return
       }
       if (this.$refs.scrollCon.scrollTop > this.$refs.scroll.clientHeight - (this.$refs.scrollCon.clientHeight * 1.5)) {
-        console.log(this.page)
         this.page += 1
         this.loadList(this.tab, this.page)
       }
+    },
+    setCtgrOpt (which) {
+      this.ctgrOpt = which
     },
     setPopup (layer, which) {
       bus.$emit('setPopup', [layer, which])
@@ -85,6 +105,7 @@ export default {
       this.calendarList = []
       this.categoryList = []
       this.searchList = []
+      this.hashtags = []
       this.loadMore = true
       this.loadList(which, 0)
     },
@@ -92,6 +113,12 @@ export default {
       if (which === 'calendar') {
         this.getCalendarList(page)
       } else if (which === 'search') {
+        if (this.page === 0) {
+          this.ctgrOpt = ''
+          this.getSamples()
+        } else {
+          this.getSearchList(page)
+        }
       } else if (which === 'favorite') {
       } else {
         this.getCategoryList(which, page)
@@ -148,6 +175,9 @@ export default {
     },
     // eat, play, work별 리스트
     getCategoryList (which, page) {
+      if (!this.loadMore) {
+        return
+      }
       this.page = page
       if (page === 0) {
         this.categoryList = []
@@ -165,8 +195,80 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }).then((response) => {
-        this.loadMore = response.data.length > 0
         this.categoryList = this.categoryList.concat(response.data)
+        this.loadMore = response.data.length > 0
+      })
+    },
+    getSamples () {
+      if (!this.loadMore) {
+        return
+      }
+      this.loadMore = false
+      this.$axios.post(apiUrl + 'posting/random', this.$qs.stringify({limit: 6}), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        this.categoryList = response.data
+      })
+      this.$axios.post(apiUrl + 'posting/random', this.$qs.stringify({limit: 10}), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        var hashtags = []
+        response.data.map((pst) => {
+          pst.hashtags.split(',').map((ht) => {
+            if (!pst.rgn_do.includes(ht) && !pst.rgn_sgg.includes(ht) && !pst.rgn_emd.includes(ht) &&
+            !hashtags.includes(ht)) {
+              hashtags.push(ht)
+            }
+          })
+        })
+        this.hashtags = hashtags
+      })
+    },
+    searchKeyUp (e) {
+      if (e.keyCode === 13) {
+        if (this.search.trim().length > 0) {
+          this.categoryList = []
+          this.hashtags = []
+          this.loadMore = true
+          this.getSearchList(0)
+        }
+      }
+    },
+    searchHashtag (hashtag) {
+      this.search = hashtag
+      this.categoryList = []
+      this.hashtags = []
+      this.loadMore = true
+      this.getSearchList(0)
+    },
+    getSearchList (page) {
+      if (!this.loadMore) {
+        return
+      }
+      this.page = page
+      if (page === 0) {
+        this.categoryList = []
+      }
+      var cond = {
+        category: this.ctgrOpt,
+        search: this.search,
+        importance: 0,
+        limit: 20,
+        offset: this.page
+      }
+      cond = this.customize(cond)
+      this.loadMore = false
+      this.$axios.post(apiUrl + 'posting/search', this.$qs.stringify(cond), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        this.categoryList = this.categoryList.concat(response.data)
+        this.loadMore = response.data.length > 0
       })
     },
     showMonthYear (list, idx) {

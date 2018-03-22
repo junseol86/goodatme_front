@@ -71,8 +71,8 @@ export default {
         right: this.cw / 80 + 'px',
         borderRadius: this.cw / 48 + 'px',
         backgroundColor: `rgb(${parseInt(this.posting.color_r) *
-        85 + 64} ${parseInt(this.posting.color_g) * 85 + 64} ${parseInt(this.posting.color_b) *
-        85 + 64})`
+        85 + 60} ${parseInt(this.posting.color_g) * 85 + 60} ${parseInt(this.posting.color_b) *
+        85 + 60})`
       }
     },
     dateSubCtgrStyle () {
