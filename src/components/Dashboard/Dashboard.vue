@@ -47,13 +47,13 @@
       <div id="contents">
         <!-- 최상단 슬라이드 -->
         <div id="top-slide" class="centered" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
-          <div v-if="content.topSlide.list.length> 0" class="black-bg-text"
+          <div v-if="content.topSlide.list.length > 0" class="black-bg-text"
             :style="{width: layout.centeredWidth, height: layout.topSlideH}">
             <image-bg :width="layout.centeredWidth" :height="layout.topSlideH"
-            :url="'2018-2-4_2-43-52-6907.jpg'"></image-bg>
+            :url="content.topSlide.list[content.topSlide.selectedIdx].image"></image-bg>
             <div class="abs darkBg" :style="{width: layout.centeredWidth, height: layout.topSlideH}"></div>
             <div class="abs ctgr" :style="placeInsideTopSlide('ctgr')">
-              _{{content.topSlide.list[content.topSlide.selectedIdx].ctgr}}
+              _{{content.topSlide.list[content.topSlide.selectedIdx].category}}
             </div>
             <div class="abs title" :style="placeInsideTopSlide('title')">
               <img :style="placeInsideTopSlide('img')"
@@ -61,10 +61,10 @@
               <br>{{content.topSlide.list[content.topSlide.selectedIdx].title}}
             </div>
             <div class="abs subCtgr" :style="placeInsideTopSlide('subCtgr')">
-              {{content.topSlide.list[content.topSlide.selectedIdx].subCtgr}}
+              {{content.topSlide.list[content.topSlide.selectedIdx].sub_category}}
             </div>
             <div class="abs date-editor" :style="placeInsideTopSlide('date-editor')">
-              {{content.topSlide.list[content.topSlide.selectedIdx].date}}<br>
+              {{content.topSlide.list[content.topSlide.selectedIdx].createdAt.substring(0, 10).replace(/-/g, '.')}}<br>
               <span>by</span>
               {{content.topSlide.list[content.topSlide.selectedIdx].editor}} 에디터
             </div>
@@ -157,7 +157,7 @@
             </tr>
           </table>
           <div class="canvas" :style="{height: content.postings.canvasHeight}">
-            <div v-for="(posting, idx) in content.postings[category].list"
+            <div v-for="(posting, idx) in content.postings[category].list" @click="openPosting(posting.idx)"
             :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx, false)">
               <image-bg
               :width="placePosting(category, idx, true).width"
@@ -167,10 +167,12 @@
               <div class="abs black-cover" :style="placePosting(category, idx, true)">
               </div>
               <span class="abs title" :style="placeInsidePosting('title')">{{posting.title}}</span>
-              <span class="abs subCtgr" :style="placeInsidePosting('subCtgr')">{{posting.subCtgr}}</span>
-              <span class="abs date" :style="placeInsidePosting('date')">{{posting.date}}</span>
+              <span class="abs subCtgr" :style="placeInsidePosting('subCtgr')">{{posting.sub_category}}</span>
+              <span class="abs date" :style="placeInsidePosting('date')">
+                {{posting.createdAt.substring(0, 10).replace(/-/g, '.')}}
+              </span>
               <div class="abs symbol" :style="placeInsidePosting('symbol')">
-                <div :style="codeToColor(posting.color)">
+                <div :style="codeToColor(posting)">
                   <img :src="'http://13.125.24.19:8001/interface/subsc_' + posting.shape + '.png'">
                 </div>
               </div>
@@ -300,11 +302,11 @@ export default {
     setPopup (layer, which) {
       this['popup_' + layer] = which
     },
-    codeToColor (code) {
+    codeToColor (pst) {
       let offset = 60
-      let r = parseInt(code.split('-')[0]) * 85 + offset
-      let g = parseInt(code.split('-')[1]) * 85 + offset
-      let b = parseInt(code.split('-')[2]) * 85 + offset
+      let r = parseInt(pst.color_r) * 85 + offset
+      let g = parseInt(pst.color_g) * 85 + offset
+      let b = parseInt(pst.color_b) * 85 + offset
       let result = {
         backgroundColor: `rgb(${r}, ${g}, ${b})`
       }
@@ -461,11 +463,55 @@ export default {
         _this.content.postings[ctgr].list = window._.shuffle(mock.posting_6)
       })
     },
+    // 조건을 사용자에게 맞춤
+    customize (cond) {
+      if (this.state.loggedIn) {
+        cond.shape = this.state.account.shape
+        cond.color_r = this.state.account.color_r
+        cond.color_g = this.state.account.color_g
+        cond.color_b = this.state.account.color_b
+        cond.shape_sbsc = this.state.account.shape_sbsc
+      }
+      return cond
+    },
     getPostings () {
+      // 상단 슬라이드 포스팅
+      var cond = {
+        importance: -1,
+        limit: 3,
+        offset: 0
+      }
+      cond = this.customize(cond)
+      this.$axios.post(apiUrl + 'posting/category', this.$qs.stringify(cond), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        this.content.topSlide.list = response.data
+      })
+      // 달력 포스팅
       this.$axios.get(apiUrl + 'posting')
         .then((response) => {
           this.content.calendar.list = response.data
         })
+      // 카테고리별 포스팅
+      var categories = ['eat', 'play', 'work']
+      categories.map((it, idx) => {
+        var cond = {
+          category: it,
+          importance: 1,
+          limit: 6,
+          offset: 0
+        }
+        cond = this.customize(cond)
+        this.$axios.post(apiUrl + 'posting/category', this.$qs.stringify(cond), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }).then((response) => {
+          this.content.postings[it].list = response.data
+        })
+      })
     },
     openPosting (idx) {
       this.postingOn = idx
@@ -521,7 +567,7 @@ export default {
     window.addEventListener('resize', function () {
       setSizes()
     })
-    this.setMock()
+    // this.setMock()
 
     bus.$on('setPopup', lw => {
       this.setPopup(lw[0], lw[1])

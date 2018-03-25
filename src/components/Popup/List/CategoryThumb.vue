@@ -64,15 +64,17 @@ export default {
       }
     },
     shapeStyle () {
+      var r = parseInt(this.posting.color_r) * 85 + 60
+      var g = parseInt(this.posting.color_g) * 85 + 60
+      var b = parseInt(this.posting.color_b) * 85 + 60
+      var bg = `rgb(${r}, ${g}, ${b})`
       return {
         width: this.cw / 28 + 'px',
         height: this.cw / 28 + 'px',
         top: this.cw / 80 + 'px',
         right: this.cw / 80 + 'px',
         borderRadius: this.cw / 48 + 'px',
-        backgroundColor: `rgb(${parseInt(this.posting.color_r) *
-        85 + 60} ${parseInt(this.posting.color_g) * 85 + 60} ${parseInt(this.posting.color_b) *
-        85 + 60})`
+        backgroundColor: bg
       }
     },
     dateSubCtgrStyle () {
