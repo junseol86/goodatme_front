@@ -434,9 +434,11 @@ export default {
     },
     // 로그인 등 계정을 필요로 하는 작업 후 토큰 등 계정정보 업데이트
     updateAccount (response) {
-      this.state.account = response.data.account
+      // 유저정보가 최상위에 있는 JSON일 때와 account 안에 다시 들어있는 JSON일 때 구분
+      var data = response.data.token !== undefined ? response.data : response.data.account
+      this.state.account = data.account
       this.state.loggedIn = true
-      this.$cookie.set('token', response.data.token, 7)
+      this.$cookie.set('token', data.token, 7)
     },
     // 로그아웃
     logout (reload) {

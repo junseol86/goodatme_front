@@ -57,6 +57,19 @@
               </div>
             </div>
           </div>
+          <div :style="{fontSize: cw/ 36 + 'px', paddingTop: cw / 16 + 'px'}">담아둔 장소</div>
+          <div class="list" :style="{padding: lrPadding / 2 + 'px ' +  lrPadding + 'px'}">
+            <category-thumb v-for="(posting, idx) in favoriteList" :key="idx"
+            :lrPadding="lrPadding" :state="state" :layout="layout" :posting="posting"></category-thumb>
+          </div>
+          <div @click="goToFavorite()" class="trHv"
+          :style="{
+            fontSize: cw/ 56 + 'px',
+            paddingTop: cw / 480 + 'px',
+            paddingBottom: cw / 24 + 'px'
+            }">
+          [ + 모두 보기 ]
+          </div>
           <img class="trHv"
           :style="{right: layout.closeRight}" id="close" src="../../assets/img/popup_x_72.png" @click="setPopup('1', '')"/>
         </div>
@@ -67,8 +80,10 @@
 
 <script>
 import {bus} from '../../main.js'
+import CategoryThumb from '../Popup/List/CategoryThumb'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
+  components: {CategoryThumb},
   props: ['layout', 'state'],
   name: 'MypagePopup',
   data () {
@@ -76,7 +91,9 @@ export default {
       colors: [0, 0, 0],
       subscColors: this.$util.randomSubscColors(),
       ajMoving: false,
-      shouldUpload: false
+      shouldUpload: false,
+      favoriteList: [],
+      lrPadding: 64
     }
   },
   methods: {
@@ -172,6 +189,27 @@ export default {
         }).catch(err => {
           console.log(err)
         })
+    },
+    getFavoriteList () {
+      var cond = {
+        token: this.$cookie.get('token'),
+        limit: 6,
+        offset: 0
+      }
+      this.$axios.post(apiUrl + 'favorite/list', this.$qs.stringify(cond), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        response.data.favorites.map((it) => {
+          this.favoriteList = this.favoriteList.concat(it.postings)
+        })
+        bus.$emit('updateAccount', response)
+      })
+    },
+    goToFavorite () {
+      this.setPopup('0', 'favorite')
+      this.setPopup('1', '')
     }
   },
   computed: {
@@ -180,7 +218,7 @@ export default {
     },
     shapeSectionStyle () {
       return {
-        padding: `${100 * this.cw / 1600}px ${150 * this.cw / 1600}px`
+        padding: `${100 * this.cw / 1600}px ${150 * this.cw / 1600}px ${10 * this.cw / 1600}px ${150 * this.cw / 1600}px`
       }
     },
     shapeStyle () {
@@ -281,6 +319,7 @@ export default {
     this.$set(this.colors, 0, parseInt(colorsStrs[0]))
     this.$set(this.colors, 1, parseInt(colorsStrs[1]))
     this.$set(this.colors, 2, parseInt(colorsStrs[2]))
+    this.getFavoriteList()
   }
 }
 </script>

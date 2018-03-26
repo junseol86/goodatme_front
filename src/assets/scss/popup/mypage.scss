@@ -110,5 +110,11 @@
       width: 36px;
       height: 36px;
     }
+    .list {
+      overflow: hidden;
+      &::after {
+        clear: both;
+      }
+    }
   }
 }

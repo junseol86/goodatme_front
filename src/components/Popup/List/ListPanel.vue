@@ -45,10 +45,11 @@
             work
           </div>
           <span>|</span>
-          <div :class="`button trHv ${tab === 'favorite' ? 'on' : ''}`" @click="setPopupTab('0', 'favorite')">
+          <div v-if="state.loggedIn"
+          :class="`button trHv ${tab === 'favorite' ? 'on' : ''}`" @click="setPopupTab('0', 'favorite')">
             favorite
           </div>
-          <span>|</span>
+          <span v-if="state.loggedIn">|</span>
           <div :class="`button trHv ${tab === 'search' ? 'on' : ''}`" @click="setPopupTab('0', 'search')">
             search
           </div>
@@ -120,6 +121,7 @@ export default {
           this.getSearchList(page)
         }
       } else if (which === 'favorite') {
+        this.getFavoriteList(page)
       } else {
         this.getCategoryList(which, page)
       }
@@ -269,6 +271,33 @@ export default {
       }).then((response) => {
         this.categoryList = this.categoryList.concat(response.data)
         this.loadMore = response.data.length > 0
+      })
+    },
+    getFavoriteList (page) {
+      if (!this.loadMore) {
+        return
+      }
+      this.page = page
+      if (page === 0) {
+        this.categoryList = []
+      }
+      var cond = {
+        token: this.$cookie.get('token'),
+        limit: 20,
+        offset: this.page
+      }
+      cond = this.customize(cond)
+      this.loadMore = false
+      this.$axios.post(apiUrl + 'favorite/list', this.$qs.stringify(cond), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        response.data.favorites.map((it) => {
+          this.categoryList = this.categoryList.concat(it.postings)
+        })
+        this.loadMore = response.data.length > 0
+        bus.$emit('updateAccount', response)
       })
     },
     showMonthYear (list, idx) {

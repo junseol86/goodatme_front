@@ -22,12 +22,34 @@
       }
     }
     #belowTop {
+      position: relative;
       text-align: left;
       padding-right: 300px;
-      #title {
-        padding: 40px;
+      #title_1 {
+        padding: 48px 0 0 36px;
         font-size: 3em;
       } 
+      #title_2 {
+        padding: 12px 0 96px 36px;
+        font-size: 3em;
+      } 
+      #likeBtn {
+        position: absolute;
+        top: 256px;
+        font-size: 1.2em;
+        img {
+          width: 50px;
+          height: 50px;
+          vertical-align: middle;
+        }
+      }
+      #dateAndEditor {
+        position: absolute;
+        font-size: 1.1em;
+        top: 48px;
+        text-align: right;
+        line-height: 1.8em;
+      }
     }
   }
 }
