@@ -28,8 +28,8 @@
                   </div>
                 </div>
                 <div class="adjustLabels">
-                  <div :style="labelLeftStyle">{{['차분', '양', '즉흥'][idx]}}</div>
-                  <div :style="labelRightStyle">{{['활동', '질', '계획'][idx]}}</div>
+                  <div :style="labelLeftStyle">{{['차분', '양', '계획'][idx]}}</div>
+                  <div :style="labelRightStyle">{{['활동', '질', '즉흥'][idx]}}</div>
                 </div>
                 <div :style="colorResultStyle">
                   #{{colorResult(idx)}}
@@ -147,8 +147,8 @@ export default {
       }
     },
     colorResult (idx) {
-      var lr = this.colors[idx] < 128 ? 0 : 1
-      return [['정적', '활동적'], ['양적', '합리적'], ['즉흥적', '계획적']][idx][lr]
+      var lr = Math.floor(this.colors[idx] / 85)
+      return [['차분한', '여유로운', '활동적'], ['질보단 양', '끌리는 것', '양보단 질'], ['계획적', '느낌대로', '즉흥적']][idx][lr]
     },
     subscShapeStyle (shape, idx) {
       var subscs = this.state.account.shape_sbsc.split(',')

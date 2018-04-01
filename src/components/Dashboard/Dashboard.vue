@@ -22,7 +22,7 @@
                 Login
               </span>
               |
-              <span class="trHv" id="login-btn">
+              <span class="trHv" id="login-btn" @click="setPopup('1', 'register')">
                 Register
               </span>
             </span>
@@ -78,7 +78,8 @@
           <div class="message" v-if="myShape === 'random'" :style="{width: layout.windowWidth}">
             나를 위한 공간을 찾아보세요.<br>
             <span v-if="!state.loggedIn">
-              <span class="trHv">회원가입</span> | <span class="trHv" @click="setPopup('1', 'login')">로그인</span>
+              <span class="trHv" @click="setPopup('1', 'register')">회원가입</span> | <span
+              class="trHv" @click="setPopup('1', 'login')">로그인</span>
             </span>
             <span v-if="state.loggedIn" class="trHv" @click="setPopup('1', 'mypage')">나의 라이프스타일 설정하기</span>
           </div>
@@ -191,6 +192,7 @@
       </div>
       <div class="popup_1">
         <login-popup v-if="popup_1 === 'login'" :layout="layout" :state="state"></login-popup>
+        <register-popup v-if="popup_1 === 'register'" :layout="layout" :state="state"></register-popup>
         <mypage-popup v-if="popup_1 === 'mypage' && state.loggedIn" :layout="layout" :state="state"></mypage-popup>
         <write-popup v-if="popup_1 === 'write'" :layout="layout" :state="state"></write-popup>
         <posting-popup v-if="popup_1 === 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
@@ -206,6 +208,7 @@
 import {bus} from '../../main.js'
 import ImageBg from '../Common/ImageBg'
 import LoginPopup from '../Popup/LoginPopup'
+import RegisterPopup from '../Popup/RegisterPopup'
 import QuestionPopup from '../Popup/QuestionPopup'
 import MypagePopup from '../Popup/MypagePopup'
 import WritePopup from '../Popup/WritePopup'
@@ -213,7 +216,7 @@ import PostingPopup from '../Popup/PostingPopup'
 import ListPanel from '../Popup/List/ListPanel'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {ImageBg, LoginPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup, ListPanel},
+  components: {ImageBg, LoginPopup, RegisterPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup, ListPanel},
   name: 'Dashboard',
   data () {
     return {
@@ -435,9 +438,12 @@ export default {
     // 로그인 등 계정을 필요로 하는 작업 후 토큰 등 계정정보 업데이트
     updateAccount (response) {
       // 유저정보가 최상위에 있는 JSON일 때와 account 안에 다시 들어있는 JSON일 때 구분
+      // console.log(response.data)
       var data = response.data.token !== undefined ? response.data : response.data.account
+      // console.log(data)
       this.state.account = data.account
       this.state.loggedIn = true
+      // console.log(data.token)
       this.$cookie.set('token', data.token, 7)
     },
     // 로그아웃
