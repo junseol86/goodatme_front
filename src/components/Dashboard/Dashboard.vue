@@ -159,7 +159,7 @@
           </table>
           <div class="canvas" :style="{height: content.postings.canvasHeight}">
             <div v-for="(posting, idx) in content.postings[category].list" @click="openPosting(posting.idx)"
-            :key="posting.idx" :class="['posting', category]" :style="placePosting(category, idx, false)">
+            :key="idx" :class="['posting', category]" :style="placePosting(category, idx, false)">
               <image-bg
               :width="placePosting(category, idx, true).width"
               :height="placePosting(category, idx, true).height"
@@ -183,7 +183,7 @@
 
         <!-- 샵 -->
         <div id="shop" class="centered" :style="{width: layout.centeredWidth}">
-          <span class="label">_shop</span>
+          <!-- <span class="label">_shop</span> -->
         </div>
 
       </div>
@@ -194,7 +194,9 @@
         <login-popup v-if="popup_1 === 'login'" :layout="layout" :state="state"></login-popup>
         <register-popup v-if="popup_1 === 'register'" :layout="layout" :state="state"></register-popup>
         <mypage-popup v-if="popup_1 === 'mypage' && state.loggedIn" :layout="layout" :state="state"></mypage-popup>
-        <write-popup v-if="popup_1 === 'write'" :layout="layout" :state="state"></write-popup>
+        <write-popup v-if="popup_1 === 'write'" :layout="layout" :state="state" :mode="'write'"></write-popup>
+        <write-popup v-if="popup_1[0] == '_'" :layout="layout" :state="state"
+        :mode="popup_1.replace('_', '')"></write-popup>
         <posting-popup v-if="popup_1 === 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
       </div>
       <div class="popup_2">
@@ -421,6 +423,7 @@ export default {
     access () {
       if (this.$cookie.get('token') === undefined) {
         this.logout(false)
+        this.getPostings()
       } else {
         this.$axios.get(apiUrl + 'account/access', {
           headers: {
@@ -429,9 +432,12 @@ export default {
         }).then((response) => {
           this.updateAccount(response)
           this.popup_1 = ''
+          // 대시보드의 컨텐츠 다운로드
+          this.getPostings()
         }).catch((error) => {
           alert(error.response.data)
           this.logout(true)
+          this.getPostings()
         })
       }
     },
@@ -506,13 +512,10 @@ export default {
       var categories = ['eat', 'play', 'work']
       categories.map((it, idx) => {
         var cond = {
-          category: it,
-          importance: 1,
-          limit: 6,
-          offset: 0
+          category: it
         }
         cond = this.customize(cond)
-        this.$axios.post(apiUrl + 'posting/category', this.$qs.stringify(cond), {
+        this.$axios.post(apiUrl + 'posting/top6', this.$qs.stringify(cond), {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
@@ -595,8 +598,6 @@ export default {
 
     // 토큰 로그인 시도
     this.access()
-    // 대시보드의 컨텐츠 다운로드
-    this.getPostings()
   },
   created () {
     let _this = this

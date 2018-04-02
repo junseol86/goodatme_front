@@ -66,6 +66,8 @@
           </div>
           <div class="forAdmin" v-if="state.account.type === 'ADMIN'">
             <span class="trHv" @click="deletePosting()">[Delete]</span>
+            <span> | </span>
+            <span class="trHv" @click="modifyPosting()">[Modify]</span>
           </div>
         </div>
       </div>
@@ -182,6 +184,9 @@ export default {
           window.location.reload()
         })
       }
+    },
+    modifyPosting () {
+      bus.$emit('setPopup', ['1', '_' + this.postingOn])
     },
     toggleFavorite () {
       if (!this.state.loggedIn) {

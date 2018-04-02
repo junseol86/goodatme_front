@@ -73,6 +73,9 @@
               <input v-model="posting.importance" type="number" class="optional" placeholder="중요도(비례)"/>
             </div>
             <div>
+              <textarea placeholder="html 태그 삽입: 붙여넣기 후 엔터" v-model="htmlToInsert" @keyup.enter="insertContent(htmlToInsert)"/>
+            </div>
+            <div>
               <button @click="contentImageDialog()">본문 이미지 삽입</button>
               <input id="contentImage" name="photo" type="file" @change="uploadContentImage()"/>
               <button class="right" @click="upload()">
@@ -92,7 +95,7 @@ import {bus} from '../../main.js'
 const apiUrl = 'http://13.125.24.19:8002/'
 const imgUrl = 'http://13.125.24.19:8001/storage/'
 export default {
-  props: ['layout', 'state'],
+  props: ['layout', 'state', 'mode'],
   name: 'WritePopup',
   data () {
     return {
@@ -119,7 +122,8 @@ export default {
         image: '',
         hashtags: '',
         importance: 0
-      }
+      },
+      htmlToInsert: ''
     }
   },
   methods: {
@@ -199,23 +203,59 @@ export default {
       window.open(imgUrl + this.posting.image, '_blank')
     },
     upload () {
-      if (this.readyToUpload) {
-        this.setContent()
-        this.posting.token = this.$cookie.get('token')
-        var toPost = this.$qs.stringify(this.posting)
-        this.$axios.post(apiUrl + 'posting', toPost, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        })
-          .then((response) => {
-            this.$cookie.set('token', response.data.account.token)
-            bus.$emit('afterPostingUpload')
-          }).catch(err => {
-            console.log(err)
+      this.posting.token = this.$cookie.get('token')
+      var toPost = this.$qs.stringify(this.posting)
+      if (this.mode === 'write') {
+        if (this.readyToUpload) {
+          this.setContent()
+          this.$axios.post(apiUrl + 'posting', toPost, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
           })
+            .then((response) => {
+              bus.$emit('updateAccount', response)
+              bus.$emit('afterPostingUpload')
+            }).catch(err => {
+              console.log(err)
+            })
+        } else {
+          console.log(this.posting)
+        }
       } else {
-        console.log(this.posting)
+        if (this.readyToUpload) {
+          this.setContent()
+          this.$axios.post(apiUrl + 'posting/modify', toPost, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          })
+            .then((response) => {
+              bus.$emit('updateAccount', response)
+              bus.$emit('afterPostingUpload')
+            }).catch(err => {
+              console.log(err)
+            })
+        } else {
+          console.log(this.posting)
+        }
+      }
+    },
+    downloadPosting () {
+      this.$axios.get(apiUrl + 'posting/' + this.mode).then((response) => {
+        this.writer = response.data.writer
+        this.posting = response.data.posting
+        this.setContentToModify()
+      })
+    },
+    setContentToModify () {
+      var comp = this
+      try {
+        window.tinymce.get('tm_write').setContent(this.posting.content)
+      } catch (err) {
+        window.setTimeout(function () {
+          comp.setContentToModify(comp.posting.content)
+        }, 100)
       }
     }
   },
@@ -233,6 +273,9 @@ export default {
   },
   mounted () {
     this.initTinyMCE()
+    if (this.mode !== 'write') {
+      this.downloadPosting()
+    }
   }
 }
 </script>
