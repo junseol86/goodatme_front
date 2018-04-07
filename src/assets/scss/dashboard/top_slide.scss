@@ -11,7 +11,11 @@
       &.darkBg {
         top: 0;
         left: 0;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.67);
+        cursor: pointer;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.5);
+        }
       }
       &.ctgr {
         font-weight: bold;
@@ -34,6 +38,20 @@
           margin-right: 32px;
         }
       }
+    }
+  }
+  img.left, img.right {
+    position: absolute;
+    opacity: 0.3;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+    &.left {
+      left: 12px;
+    }
+    &.right {
+      right: 12px;
     }
   }
 }

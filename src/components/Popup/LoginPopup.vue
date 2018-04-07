@@ -7,7 +7,7 @@
           <input type="text" placeholder="이메일" v-model="email"/><br>
           <input type="password" placeholder="비밀번호" v-model="password" @keyup="loginEnter"/>
           <div class="buttons">
-            <span class="trHv register">회원가입</span>
+            <span class="trHv register" @click="setPopup('1', 'register')">회원가입</span>
             <span class="trHv ok" @click="login()">확인</span>
           </div>
           <img class="trHv close" src="../../assets/img/popup_x.png" @click="setPopup('1', '')"/>

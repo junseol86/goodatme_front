@@ -31,19 +31,19 @@
                 <option value="triangle">세모</option>
               </select>
               <select v-model="posting.color_r">
-                <option value="0">R: 낮음</option>
-                <option value="1">R: 중간</option>
-                <option value="2">R: 높음</option>
+                <option value="0">R: 차분한</option>
+                <option value="1">R: 여유로운</option>
+                <option value="2">R: 활동적</option>
               </select>
               <select v-model="posting.color_g">
-                <option value="0">G: 낮음</option>
-                <option value="1">G: 중간</option>
-                <option value="2">G: 높음</option>
+                <option value="0">G: 질보단 양</option>
+                <option value="1">G: 끌리는 것</option>
+                <option value="2">G: 양보단 질</option>
               </select>
               <select v-model="posting.color_b">
-                <option value="0">B: 낮음</option>
-                <option value="1">B: 중간</option>
-                <option value="2">B: 높음</option>
+                <option value="0">B: 계획적</option>
+                <option value="1">B: 느낌대로</option>
+                <option value="2">B: 즉흥적</option>
               </select>
             </div>
             <div>
@@ -204,10 +204,11 @@ export default {
     },
     upload () {
       this.posting.token = this.$cookie.get('token')
-      var toPost = this.$qs.stringify(this.posting)
+      var toPost = ''
       if (this.mode === 'write') {
         if (this.readyToUpload) {
           this.setContent()
+          toPost = this.$qs.stringify(this.posting)
           this.$axios.post(apiUrl + 'posting', toPost, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -225,6 +226,7 @@ export default {
       } else {
         if (this.readyToUpload) {
           this.setContent()
+          toPost = this.$qs.stringify(this.posting)
           this.$axios.post(apiUrl + 'posting/modify', toPost, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'

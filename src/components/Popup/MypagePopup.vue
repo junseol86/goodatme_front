@@ -147,7 +147,7 @@ export default {
       }
     },
     colorResult (idx) {
-      var lr = Math.floor(this.colors[idx] / 85)
+      var lr = Math.floor(Math.max(0, this.colors[idx] - 1) / 85)
       return [['차분한', '여유로운', '활동적'], ['질보단 양', '끌리는 것', '양보단 질'], ['계획적', '느낌대로', '즉흥적']][idx][lr]
     },
     subscShapeStyle (shape, idx) {

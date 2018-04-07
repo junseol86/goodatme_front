@@ -31,6 +31,12 @@
               {{posting.createdAt.substring(0, 10).replace(/-/g, '.')}}<br>
               {{posting.editor}} 씀
             </div>
+            <div id="hashtags">
+              <span v-if="posting.hashtags !== undefined" v-for="(hashtag, idx) in hashtags"
+              :key="idx" @click="searchHashtag(hashtag)">
+                #{{hashtag}}
+              </span>
+            </div>
             <div id="content">
               <div v-html="posting.content">
               </div>
@@ -205,6 +211,10 @@ export default {
         bus.$emit('updateAccount', response)
       })
     },
+    searchHashtag (hashtag) {
+      this.close()
+      bus.$emit('setPopup', ['0', `search#${hashtag}`])
+    },
     close () {
       bus.$emit('setPopup', ['1', ''])
     },
@@ -243,6 +253,9 @@ export default {
       return {
         left: this.cw - 264 + 'px'
       }
+    },
+    hashtags () {
+      return this.posting.hashtags === undefined ? [] : this.posting.hashtags.split(',')
     }
   },
   mounted () {

@@ -15,7 +15,7 @@
                   <div :class="ctgrOpt == 'work' ? 'on' : ''" @click="setCtgrOpt('work')">_work</div>
                 </div>
                 <img src="../../../assets/img/topbar_search.png">
-                <input type="text" v-model="search" @keyup="searchKeyUp" placeholder="지역명, 장소명, 또는 해시태그"/>
+                <input type="text" v-model="search" @keyup="searchKeyUp" placeholder="지역명, 장소명, 또는 해시태그" ref="search"/>
               </div>
               <div class="hashtags">
                 <span v-for="(hashtag, idx) in hashtags" :key="idx" @click="searchHashtag(hashtag)">#{{hashtag}}</span>
@@ -50,7 +50,8 @@
             favorite
           </div>
           <span v-if="state.loggedIn">|</span>
-          <div :class="`button trHv ${tab === 'search' ? 'on' : ''}`" @click="setPopupTab('0', 'search')">
+          <div :class="`button trHv ${tab === 'search' || tab.includes('#') ? 'on' : ''}`"
+          @click="setPopupTab('0', 'search')">
             search
           </div>
           <img class="close trHv" @click="setPopup('0', '')" src="../../../assets/img/popup_x_72.png"/>
@@ -232,11 +233,13 @@ export default {
     },
     searchKeyUp (e) {
       if (e.keyCode === 13) {
-        if (this.search.trim().length > 0) {
+        if (this.search.trim().length > 1) {
           this.categoryList = []
           this.hashtags = []
           this.loadMore = true
           this.getSearchList(0)
+        } else {
+          alert('검색어는 두 글자 이상 입력해주세요.')
         }
       }
     },
@@ -270,6 +273,10 @@ export default {
         }
       }).then((response) => {
         this.categoryList = this.categoryList.concat(response.data)
+        if (page === 0 && this.categoryList.length === 0) {
+          this.search = '검색결과가 없습니다.'
+          this.$refs.search.select()
+        }
         this.loadMore = response.data.length > 0
       })
     },
@@ -332,7 +339,11 @@ export default {
     }
   },
   mounted () {
-    this.setList(this.tab)
+    if (this.tab.includes('#')) {
+      this.searchHashtag(this.tab.split('#')[1])
+    } else {
+      this.setList(this.tab)
+    }
   }
 }
 </script>

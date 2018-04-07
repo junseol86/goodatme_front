@@ -35,7 +35,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        background-color: black;
+        // background-color: black;
         opacity: 0.67;
       }
     }
@@ -78,6 +78,25 @@
         right: 48px;
         text-align: right;
         line-height: 1.8em;
+      }
+      #hashtags {
+        padding: 16px 32px;
+        span {
+          display: inline-block;
+          font-size: 1.2em;
+          border-radius: 20px;
+          padding: 8px 12px;
+          background-color: #eee;
+          margin: 0 16px 16px 0;
+          cursor: pointer;
+          &:hover {
+            background-color: #ddd;
+          }
+        }
+      }
+      #content {
+        letter-spacing: 1px;
+        line-height: 1.5em;
       }
     }
     .inputCon {

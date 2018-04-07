@@ -11,7 +11,7 @@
           _{{posting.category}} <span>{{posting.sub_category}}</span>
         </div>
         <div class="myeongjo" :style="titleStyle">
-          {{posting.title}}
+          {{util('strLimit', [posting.title, 12])}}
         </div>
         <div :style="briefStyle">
           {{util('strLimit', [posting.brief, 60])}}

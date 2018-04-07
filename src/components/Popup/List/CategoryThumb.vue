@@ -10,7 +10,7 @@
           :src="'http://13.125.24.19:8001/interface/subsc_' + posting.shape + '.png'">
           <br>
         </div>
-        <div class="myeongjo" :style="titleStyle">{{posting.title}}</div>
+        <div class="myeongjo" :style="titleStyle">{{util('strLimit', [posting.title, 12])}}</div>
         <div :style="dateSubCtgrStyle">
           {{posting.createdAt.substr(0, 10).replace(/-/g, '.')}}
           <span class="subCategory">
@@ -35,6 +35,9 @@ export default {
     }
   },
   methods: {
+    util (which, args) {
+      return this.$util[which](args)
+    },
     openPosting (idx) {
       bus.$emit('openPosting', idx)
     }

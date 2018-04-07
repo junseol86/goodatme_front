@@ -48,7 +48,9 @@
         <!-- 최상단 슬라이드 -->
         <div id="top-slide" class="centered" :style="{width: layout.centeredWidth, height: layout.topSlideH}">
           <div v-if="content.topSlide.list.length > 0" class="black-bg-text"
-            :style="{width: layout.centeredWidth, height: layout.topSlideH}">
+            :style="{width: layout.centeredWidth, height: layout.topSlideH}"
+            @click="openPosting(content.topSlide.list[content.topSlide.selectedIdx].idx)"
+            >
             <image-bg :width="layout.centeredWidth" :height="layout.topSlideH"
             :url="content.topSlide.list[content.topSlide.selectedIdx].image"></image-bg>
             <div class="abs darkBg" :style="{width: layout.centeredWidth, height: layout.topSlideH}"></div>
@@ -69,6 +71,10 @@
               {{content.topSlide.list[content.topSlide.selectedIdx].editor}} 에디터
             </div>
           </div>
+          <img class="left" src="../../assets/img/top_slide_left.png" @click="topSlideMove(1)"
+          :style="{top: parseInt(layout.topSlideH.replace('px', '') / 2 - 30) + 'px'}"/>
+          <img class="right" src="../../assets/img/top_slide_right.png" @click="topSlideMove(-1)"
+          :style="{top: parseInt(layout.topSlideH.replace('px', '') / 2 - 30) + 'px'}"/>
         </div>
 
         <!-- 나의 라이프스타일 띠 -->
@@ -167,7 +173,7 @@
               </image-bg>
               <div class="abs black-cover" :style="placePosting(category, idx, true)">
               </div>
-              <span class="abs title" :style="placeInsidePosting('title')">{{posting.title}}</span>
+              <span class="abs title" :style="placeInsidePosting('title')">{{util('strLimit', [posting.title, 12])}}</span>
               <span class="abs subCtgr" :style="placeInsidePosting('subCtgr')">{{posting.sub_category}}</span>
               <span class="abs date" :style="placeInsidePosting('date')">
                 {{posting.createdAt.substring(0, 10).replace(/-/g, '.')}}
@@ -324,7 +330,6 @@ export default {
         case 'title': {
           style.left = cntrW / 5 + 'px'
           style.bottom = cntrW / 11 + 'px'
-          style.width = cntrW * 0.25 + 'px'
           style.fontSize = cntrW / 500 + 'em'
           break
         }
@@ -351,6 +356,10 @@ export default {
         }
       }
       return style
+    },
+    topSlideMove (offset) {
+      this.content.topSlide.selectedIdx = (this.content.topSlide.selectedIdx + offset + 3) % 3
+      bus.$emit('setBg')
     },
     placePosting (ctgr, idx, sizeOnly) {
       let style = {
@@ -490,18 +499,22 @@ export default {
     },
     getPostings () {
       // 상단 슬라이드 포스팅
-      var cond = {
-        importance: -1,
-        limit: 3,
-        offset: 0
-      }
-      cond = this.customize(cond)
-      this.$axios.post(apiUrl + 'posting/category', this.$qs.stringify(cond), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+      ['eat', 'play', 'work'].map((category, idx) => {
+        var cond = {
+          category: category,
+          importance: -1,
+          limit: 1,
+          offset: 0
         }
-      }).then((response) => {
-        this.content.topSlide.list = response.data
+        cond = this.customize(cond)
+        this.$axios.post(apiUrl + 'posting/category', this.$qs.stringify(cond), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }).then((response) => {
+          this.content.topSlide.list = this.content.topSlide.list.concat(response.data)
+          // console.log(this.content.topSlide.list)
+        })
       })
       // 달력 포스팅
       this.$axios.get(apiUrl + 'posting')

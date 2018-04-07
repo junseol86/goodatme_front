@@ -46,6 +46,7 @@ export default {
         }
         this.style.backgroundSize = `${bgW}px ${bgH}px`
         this.style.backgroundPosition = `${bgX - 8}px ${bgY - 8}px`
+        this.style.backgroundImage = 'url("' + imgUrl + this.url + '")'
       }
     }
   },
