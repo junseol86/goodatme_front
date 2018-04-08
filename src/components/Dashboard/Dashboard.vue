@@ -14,6 +14,7 @@
                 <div class="trHv" @click="setPopup('0', 'eat')">eat</div>
                 <div class="trHv" @click="setPopup('0', 'play')">play</div>
                 <div class="trHv" @click="setPopup('0', 'work')">work</div>
+                <div class="trHv" @click="setPopup('1', 'about')">about</div>
               </div>
           </div>
           <div id="topbar-right">
@@ -204,6 +205,7 @@
         <write-popup v-if="popup_1[0] == '_'" :layout="layout" :state="state"
         :mode="popup_1.replace('_', '')"></write-popup>
         <posting-popup v-if="popup_1 === 'posting'" :layout="layout" :state="state" :postingOn="postingOn"></posting-popup>
+        <about-popup v-if="popup_1 === 'about'" :layout="layout"></about-popup>
       </div>
       <div class="popup_2">
         <question-popup v-if="popup_2 == 'question'" :layout="layout" :state="state"></question-popup>
@@ -221,10 +223,11 @@ import QuestionPopup from '../Popup/QuestionPopup'
 import MypagePopup from '../Popup/MypagePopup'
 import WritePopup from '../Popup/WritePopup'
 import PostingPopup from '../Popup/PostingPopup'
+import AboutPopup from '../Popup/AboutPopup'
 import ListPanel from '../Popup/List/ListPanel'
 const apiUrl = 'http://13.125.24.19:8002/'
 export default {
-  components: {ImageBg, LoginPopup, RegisterPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup, ListPanel},
+  components: {ImageBg, LoginPopup, RegisterPopup, MypagePopup, WritePopup, PostingPopup, QuestionPopup, ListPanel, AboutPopup},
   name: 'Dashboard',
   data () {
     return {

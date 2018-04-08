@@ -14,11 +14,11 @@
           </div>
           <!-- <img class="trHv"
           :style="{right: layout.closeRight}" id="close" src="../../assets/img/popup_x_72.png" @click="close()"/> -->
-          <div id="topImage" :style="topImageSize">
-            <image-bg v-if="posting !== ''"
-            :width="topImageSize.width" :height="topImageSize.height"
-            :url="posting.image"></image-bg>
-            <div class="black" :style="topImageSize"></div>
+          <div id="topImage">
+            <image-bg-sized v-if="posting !== ''"
+            :width="topImageSize.width"
+            :url="posting.image"></image-bg-sized>
+            <!-- <div class="black" :style="topImageSize"></div> -->
           </div>
           <div id="belowTop">
             <div v-if="posting.title !== undefined" id="title_1" class="myeongjo">
@@ -83,11 +83,11 @@
 
 <script>
 import {bus} from '../../main.js'
-import ImageBg from '../Common/ImageBg'
+import ImageBgSized from '../Common/ImageBgSized'
 const apiUrl = 'http://13.125.24.19:8002/'
 // const imgUrl = 'http://13.125.24.19:8001/storage/'
 export default {
-  components: {ImageBg},
+  components: {ImageBgSized},
   props: ['layout', 'state', 'postingOn'],
   name: 'PostingPopup',
   data () {
