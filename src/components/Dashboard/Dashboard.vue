@@ -15,6 +15,7 @@
                 <div class="trHv" @click="setPopup('0', 'play')">play</div>
                 <div class="trHv" @click="setPopup('0', 'work')">work</div>
                 <div class="trHv" @click="setPopup('1', 'about')">about</div>
+                <div class="trHv" @click="goToShop()">shop</div>
               </div>
           </div>
           <div id="topbar-right">
@@ -190,7 +191,7 @@
 
         <!-- 샵 -->
         <div id="shop" class="centered" :style="{width: layout.centeredWidth}">
-          <!-- <span class="label">_shop</span> -->
+          <span class="label trHv" @click="goToShop()">_shop</span>
         </div>
 
       </div>
@@ -547,6 +548,9 @@ export default {
     afterPostingUpload () {
       this.popup_1 = ''
       this.getPostings()
+    },
+    goToShop () {
+      window.location.href = 'http://good-at.me'
     }
   },
   computed: {
