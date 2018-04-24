@@ -7,7 +7,7 @@
         <div class="centered" :style="{width: layout.centeredWidth}">
           <div id="topbar-left">
             <img class="trHv" src="../../assets/img/topbar_menu.png">
-            지오오디.엣.미
+            <img class="trHv logo" src="../../assets/img/logo_goodatme.png">
               <div class="rollover">
                 <div class="trHv" @click="setPopup('0', 'favorite')">favorite</div>
                 <div class="trHv" @click="setPopup('0', 'calendar')">calendar</div>
