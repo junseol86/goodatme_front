@@ -7,7 +7,7 @@
         <div class="centered" :style="{width: layout.centeredWidth}">
           <div id="topbar-left">
             <img class="trHv" src="../../assets/img/topbar_menu.png">
-            <img class="trHv logo" src="../../assets/img/logo_goodatme.png">
+            <img class="trHv logo" @click="goToMain()" src="../../assets/img/logo_goodatme.png">
               <div class="rollover">
                 <div class="trHv" @click="setPopup('0', 'favorite')">favorite</div>
                 <div class="trHv" @click="setPopup('0', 'calendar')">calendar</div>
@@ -551,6 +551,9 @@ export default {
     },
     goToShop () {
       window.location.href = 'http://good-at.me'
+    },
+    goToMain () {
+      window.location.href = 'http://9oodat.me'
     }
   },
   computed: {
