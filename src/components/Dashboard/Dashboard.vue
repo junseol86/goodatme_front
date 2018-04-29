@@ -101,7 +101,7 @@
         <div id="calendar">
           <div class="centered" :style="{width: layout.centeredWidth}">
             <div class="year">
-              Jan 2018
+              April 2018
             </div>
             <div class="more">
               <span class="gray-btn trHv" @click="setPopup('0', 'calendar')">전체보기</span>

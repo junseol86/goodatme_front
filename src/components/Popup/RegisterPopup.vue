@@ -10,7 +10,7 @@
                 <div class="label">* 이메일 주소</div>
                 <input type="text" v-model="toSend.email">
                 <div class="label">* 비밀번호 / 비밀번호 확인</div>
-                <input type="password" v-model="toSend.password" placeholder="대문자 + 소문자 + 숫자, 8자 이상">
+                <input type="password" v-model="toSend.password" placeholder="대,소문자 + 숫자 + 특수문자, 8자 이상">
                 <input type="password" v-model="toSend.passwordCheck">
                 <div class="label">* 이름</div>
                 <input type="text" v-model="toSend.nickname">
@@ -23,7 +23,7 @@
                 <div class="label">* 나이</div>
                 <input type="number" v-model="toSend.age">
                 <div class="label">휴대전화 번호</div>
-                <input type="text" v-model="toSend.phone">
+                <input type="text" v-model="toSend.phone" placeholder = "'-' 없이 입력">
               </div>
             </td>
             <td>
@@ -124,7 +124,7 @@ export default {
         msg += '이메일 형식을 확인하세요.'
       }
       if (!this.safePassword) {
-        msg += (msg.length === 0 ? '' : '\n\n') + '비밀번호는 영문 대문자, 영문 소문자, 숫자를 포함한 8글자 이상이어야 합니다.'
+        msg += (msg.length === 0 ? '' : '\n\n') + '비밀번호는 영문 대문자, 영문 소문자, 숫자, 특수문자를 포함한 8글자 이상이어야 합니다.'
       }
       if (this.toSend.password !== this.toSend.passwordCheck) {
         msg += (msg.length === 0 ? '' : '\n\n') + '비밀번호가 일치하지 않습니다.'
