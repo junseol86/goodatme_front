@@ -48,6 +48,12 @@
               올리기
             </div>
           </div>
+
+          <!-- 샵 -->
+          <div id="shop" class="centered" :style="{width: layout.centeredWidth}">
+            <span class="label trHv" @click="goToShop()">_shop</span>
+          </div>
+
           <div class="comments">
             <table v-for="(comment, idx) in comments" :key="idx">
               <tbody>
@@ -231,6 +237,10 @@ export default {
         }
       }
       return [title.substring(0, best), title.substring(best, title.length)]
+    },
+    // 샵으로 이동
+    goToShop () {
+      window.location.href = 'http://good-at.me'
     }
   },
   computed: {
