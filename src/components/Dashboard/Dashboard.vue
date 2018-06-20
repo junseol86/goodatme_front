@@ -101,7 +101,7 @@
         <div id="calendar">
           <div class="centered" :style="{width: layout.centeredWidth}">
             <div class="year">
-              April 2018
+              May 2018
             </div>
             <div class="more">
               <span class="gray-btn trHv" @click="setPopup('0', 'calendar')">전체보기</span>
@@ -133,27 +133,28 @@
         </div>
 
         <!-- 나의 라이프스타일은 -->
-        <div id="my-lifestyle">
-          <div class="stripe" :style="{width: layout.windowWidth}">
-            <div class="pattern" :style="{width: layout.windowWidth}">
+        <div v-if="d">
+          <div id="my-lifestyle">
+            <div class="stripe" :style="{width: layout.windowWidth}">
+              <div class="pattern" :style="{width: layout.windowWidth}">
+              </div>
+              <div class="message" :style="{width: layout.windowWidth}">
+                {{myLifestyleMessage}}
+              </div>
             </div>
-            <div class="message" :style="{width: layout.windowWidth}">
-              {{myLifestyleMessage}}
+            <div class="edit centered" :style="{width: layout.centeredWidth}">
+              <span class="gray-btn trHv" @click="setPopup('1', 'mypage')">편집하기</span>
             </div>
-          </div>
-          <div class="edit centered" :style="{width: layout.centeredWidth}">
-            <span class="gray-btn trHv" @click="setPopup('1', 'mypage')">편집하기</span>
-          </div>
-          <div v-if="state.loggedIn" class="subscribings centered" :style="{width: layout.centeredWidth}">
-            <div v-for="(shape, idx) in $util.noEmptyStrArray(state.account.shape_sbsc.split(','))"
-            :key="idx" v-if="shape !== state.account.shape" class="trHv" :style="{backgroundColor: subscColors[idx]}">
-              <img :src="'http://13.125.24.19:8001/interface/subsc_' + shape + '.png'">
+            <div v-if="state.loggedIn" class="subscribings centered" :style="{width: layout.centeredWidth}">
+              <div v-for="(shape, idx) in $util.noEmptyStrArray(state.account.shape_sbsc.split(','))"
+              :key="idx" v-if="shape !== state.account.shape" class="trHv" :style="{backgroundColor: subscColors[idx]}">
+                <img :src="'http://13.125.24.19:8001/interface/subsc_' + shape + '.png'">
+              </div>
+              <span v-if="$util.noEmptyStrArray(state.account.shape_sbsc.split(',')).length === 0"
+              class="trHv" @click="setPopup('1', 'mypage')">구독하시는 라이프스타일이 없습니다.  [추가하기]</span>
             </div>
-            <span v-if="$util.noEmptyStrArray(state.account.shape_sbsc.split(',')).length === 0"
-            class="trHv" @click="setPopup('1', 'mypage')">구독하시는 라이프스타일이 없습니다.  [추가하기]</span>
           </div>
         </div>
-
         <!-- 포스팅들 -->
         <div v-for="category in categories" :key="category" class="postings centered" :style="{width: layout.centeredWidth}">
           <table>
